@@ -10,16 +10,21 @@ A production-ready Next.js 16 event website for **Hack To Night 2026**, inspired
 - Framer Motion
 - Lucide React Icons
 
+
+## Prerequisites
+
+- [bun](https://bun.com/docs/installation)
+
 ## Development
 
 ```bash
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 ## Production
 
 ```bash
-npm run build
-npm run start
+bun run build
+bun run start
 ```
