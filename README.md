@@ -1,10 +1,10 @@
 # Hack To Night 2026
 
-A production-ready Next.js 15 event website for **Hack To Night 2026**, inspired by the visual language of TRON: Legacy.
+A production-ready Next.js 16 event website for **Hack To Night 2026**, inspired by the visual language of TRON: Legacy.
 
 ## Stack
 
-- Next.js 15 App Router
+- Next.js 16 App Router
 - TypeScript
 - Tailwind CSS
 - Framer Motion
