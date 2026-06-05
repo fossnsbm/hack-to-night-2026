@@ -6,6 +6,7 @@ import { RegistrationForm } from '@/components/registration-form';
 import { FAQSection } from '@/components/faq';
 import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
+import { ConvexClientProvider } from './ConvexClientProvider';
 
 export default function Page() {
   return (
@@ -23,7 +24,9 @@ export default function Page() {
           <Hero />
           <AboutSection />
           <EventSection />
-          <RegistrationForm />
+          <ConvexClientProvider>
+            <RegistrationForm />
+          </ConvexClientProvider>
           <FAQSection />
         </main>
         <Footer />

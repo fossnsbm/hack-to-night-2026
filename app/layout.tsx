@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Orbitron, Rajdhani } from 'next/font/google';
 import './globals.css';
+import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -28,10 +29,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${orbitron.variable} ${rajdhani.variable} bg-bg font-body text-ink antialiased`}>
-        {children}
-      </body>
-    </html>
+    <ConvexAuthNextjsServerProvider>
+      <html lang="en" className="scroll-smooth">
+        <body className={`${orbitron.variable} ${rajdhani.variable} bg-bg font-body text-ink antialiased`}>
+          {children}
+        </body>
+      </html>
+    </ConvexAuthNextjsServerProvider>
   );
 }
