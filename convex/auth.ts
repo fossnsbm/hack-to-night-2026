@@ -34,6 +34,14 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           teamMembers: profile.teamMembers,
         });
 
+        console.log('running google sheets log')
+        await ctx.scheduler.runAfter(0, internal.googleSheets.addUserToSheet, {
+          teamLeaderName: profile.teamLeaderName,
+          teamMembers: profile.teamMembers,
+          teamName: profile.teamName,
+          teamLeaderEmail: profile.email,
+          teamLeaderPhone: profile.phone!
+        })
       }
 
       return userId;

@@ -8,13 +8,23 @@
  * @module
  */
 
+import type * as CustomProfile from "../CustomProfile.js";
+import type * as auth from "../auth.js";
+import type * as googleSheets from "../googleSheets.js";
+import type * as http from "../http.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  CustomProfile: typeof CustomProfile;
+  auth: typeof auth;
+  googleSheets: typeof googleSheets;
+  http: typeof http;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.
