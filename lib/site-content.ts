@@ -1,10 +1,9 @@
-import { BookOpen, CalendarDays, Cpu, Gamepad2, Handshake, Landmark, MessagesSquare, ShieldCheck, Sparkles, Trophy, Users, Workflow } from 'lucide-react';
+import { Cpu, Handshake, MessagesSquare, Sparkles, Trophy, Users } from 'lucide-react';
 
 export const navItems = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
   { label: 'Event', href: '#event' },
-  { label: 'Register', href: '#register' },
   { label: 'FAQ', href: '#faq' }
 ];
 
@@ -92,9 +91,9 @@ export const stats = [
 ];
 
 export const registrationFields = [
-  { label: 'Full Name', name: 'fullName', type: 'text', placeholder: 'Enter your full name' },
-  { label: 'Email', name: 'email', type: 'email', placeholder: 'you@example.com' },
-  { label: 'University', name: 'university', type: 'text', placeholder: 'Your university' },
-  { label: 'Team Name', name: 'teamName', type: 'text', placeholder: 'Your team name' },
-  { label: 'Contact Number', name: 'contactNumber', type: 'tel', placeholder: '+94 7X XXX XXXX' }
+  { label: 'Email', name: 'email', type: 'email', placeholder: 'user@students.nsbm.ac.lk' },
+  { label: 'Team Name', name: 'teamName', type: 'text', placeholder: 'Team Hack' },
+  { label: 'Contact Number', name: 'phone', type: 'tel', placeholder: '07XXXXXXXX' },
+  { label: 'Password', name: 'password', type: 'password', placeholder: 'XXXXXXXXX' },
+  { label: 'Confirm Password', name: 'confpassword', type: 'password', placeholder: 'XXXXXXXXX' },
 ];
