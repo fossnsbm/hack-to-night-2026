@@ -1,12 +1,17 @@
 "use client";
 
-import { motion } from 'framer-motion';
 import { SectionHeading } from '@/components/section-heading';
+import { useRef } from 'react';
 import { eventFeatures } from '@/lib/site-content';
+import { useGsapReveal } from '@/lib/use-gsap-reveal';
 
 export function EventSection() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useGsapReveal(sectionRef, { selector: '[data-gsap-reveal]', y: 20, duration: 0.65, stagger: 0.06, threshold: 0.18 });
+
   return (
-    <section id="event" className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+    <section ref={sectionRef} id="event" className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="About The Event"
@@ -16,13 +21,9 @@ export function EventSection() {
 
         <div className="mt-16 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {eventFeatures.map((feature, index) => (
-            <motion.article
+            <article
               key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: index * 0.06 }}
-              whileHover={{ y: -8 }}
+              data-gsap-reveal
               className="glass-panel neon-border group relative overflow-hidden rounded-[1.75rem] p-6"
             >
               <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,229,255,0.14),transparent_34%),radial-gradient(circle_at_top_right,rgba(0,170,255,0.14),transparent_26%)] opacity-70 transition duration-300 group-hover:opacity-100" />
@@ -34,7 +35,7 @@ export function EventSection() {
                 <p className="mt-4 flex-1 text-base leading-8 text-slate-300">{feature.description}</p>
                 <div className="mt-6 h-px w-full bg-gradient-to-r from-neon via-electric to-transparent opacity-60" />
               </div>
-            </motion.article>
+            </article>
           ))}
         </div>
       </div>
