@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from 'framer-motion';
+import gsap from 'gsap';
 import { ArrowRight, PlayCircle } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { stats } from '@/lib/site-content';
 
 const targetDate = new Date('2026-12-12T18:00:00+05:30').getTime();
@@ -33,17 +33,94 @@ function useCountdown() {
 }
 
 function LightOrb({ className, delay = 0 }: { className?: string; delay?: number }) {
+  const orbRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!orbRef.current) {
+      return;
+    }
+
+    const tween = gsap.to(orbRef.current, {
+      keyframes: [
+        { opacity: 0.35, scale: 1 },
+        { opacity: 0.8, scale: 1.16 },
+        { opacity: 0.45, scale: 1 }
+      ],
+      duration: 7,
+      delay,
+      repeat: -1,
+      ease: 'sine.inOut'
+    });
+
+    return () => {
+      tween.kill();
+    };
+  }, [delay]);
+
   return (
-    <motion.div
+    <div
+      ref={orbRef}
       className={`absolute rounded-full blur-3xl ${className ?? ''}`}
-      animate={{ opacity: [0.35, 0.8, 0.45], scale: [1, 1.16, 1] }}
-      transition={{ duration: 7, delay, repeat: Infinity, ease: 'easeInOut' }}
     />
   );
 }
 
 export function Hero() {
   const countdown = useCountdown();
+  const introRef = useRef<HTMLDivElement | null>(null);
+  const chipRef = useRef<HTMLDivElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const leadRef = useRef<HTMLParagraphElement | null>(null);
+  const bodyRef = useRef<HTMLParagraphElement | null>(null);
+  const actionsRef = useRef<HTMLDivElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const yearRef = useRef<HTMLSpanElement | null>(null);
+  const progressFillRef = useRef<HTMLDivElement | null>(null);
+  const statRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  useLayoutEffect(() => {
+    const timeline = gsap.timeline({ defaults: { ease: 'power2.out' } });
+    const statCards = statRefs.current.filter(Boolean);
+
+    timeline.fromTo(introRef.current, { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.8 }, 0);
+    timeline.fromTo(chipRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7 }, 0.1);
+    timeline.fromTo(titleRef.current, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.75 }, 0.2);
+    timeline.fromTo(leadRef.current, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7 }, 0.32);
+    timeline.fromTo(bodyRef.current, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7 }, 0.4);
+    timeline.fromTo(actionsRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7 }, 0.48);
+    timeline.fromTo(statCards, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 }, 0.56);
+    timeline.fromTo(panelRef.current, { opacity: 0, y: 26, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.8 }, 0.22);
+
+    const yearTween = gsap.to(yearRef.current, {
+      keyframes: [
+        { opacity: 1, textShadow: '0 0 12px rgba(0,229,255,0.55)' },
+        { opacity: 0.82, textShadow: '0 0 24px rgba(0,229,255,0.95)' },
+        { opacity: 1, textShadow: '0 0 12px rgba(0,229,255,0.55)' }
+      ],
+      duration: 4.8,
+      repeat: -1,
+      ease: 'sine.inOut'
+    });
+
+    const progressTween = gsap.to(progressFillRef.current, {
+      keyframes: [
+        { width: '28%' },
+        { width: '72%' },
+        { width: '44%' },
+        { width: '86%' },
+        { width: '28%' }
+      ],
+      duration: 9,
+      repeat: -1,
+      ease: 'sine.inOut'
+    });
+
+    return () => {
+      timeline.kill();
+      yearTween.kill();
+      progressTween.kill();
+    };
+  }, []);
 
   return (
     <section id="home" className="relative overflow-hidden pt-10 sm:pt-16">
@@ -53,55 +130,38 @@ export function Hero() {
       <LightOrb className="right-8 top-52 h-56 w-56 bg-electric/18" delay={1.2} />
 
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-16 px-4 pb-24 pt-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="max-w-3xl"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12, duration: 0.7 }}
-            className="neon-chip inline-flex items-center gap-2"
-          >
+        <div ref={introRef} className="max-w-3xl">
+          <div ref={chipRef} className="neon-chip inline-flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-neon shadow-[0_0_14px_rgba(0,229,255,0.9)]" />
             NSBM FOSS Community Presents
-          </motion.div>
+          </div>
 
           <h1 className="mt-8 font-display text-5xl font-medium uppercase tracking-[0.18em] text-white text-glow sm:text-6xl lg:text-7xl xl:text-8xl">
             <span className="block">Hack To Night</span>
-            <motion.span
-              animate={{ opacity: [1, 0.82, 1], textShadow: ['0 0 12px rgba(0,229,255,0.55)', '0 0 24px rgba(0,229,255,0.95)', '0 0 12px rgba(0,229,255,0.55)'] }}
-              transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
+            <span
+              ref={yearRef}
               className="block text-neon"
             >
               2026
-            </motion.span>
+            </span>
           </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.24, duration: 0.7 }}
+          <p
+            ref={leadRef}
             className="mt-6 max-w-2xl text-xl leading-8 text-cyan-50/80 sm:text-2xl"
           >
             Enter The Grid. Build The Future.
-          </motion.p>
+          </p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.34, duration: 0.7 }}
+          <p
+            ref={bodyRef}
             className="mt-5 max-w-2xl text-lg leading-8 text-cyan-50/65"
           >
             An overnight hackathon where innovators, developers, designers, and creators collaborate to build groundbreaking solutions.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.42, duration: 0.7 }}
+          <div
+            ref={actionsRef}
             className="mt-10 flex flex-wrap gap-4"
           >
             <a
@@ -118,28 +178,26 @@ export function Hero() {
               Learn More
               <PlayCircle className="h-4 w-4" />
             </a>
-          </motion.div>
+          </div>
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat, index) => (
-              <motion.div
+              <div
                 key={stat.label}
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.18 + index * 0.08, duration: 0.6 }}
+                ref={(element) => {
+                  statRefs.current[index] = element;
+                }}
                 className="section-card-soft p-4"
               >
                 <div className="font-display text-3xl uppercase tracking-[0.18em] text-neon text-glow">{stat.value}</div>
                 <div className="mt-2 text-sm text-cyan-50/65">{stat.label}</div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 26, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.22, duration: 0.8, ease: 'easeOut' }}
+        <div
+          ref={panelRef}
           className="relative"
         >
           <div className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,rgba(0,229,255,0.18),transparent_55%)] blur-2xl" />
@@ -166,11 +224,9 @@ export function Hero() {
                   <span className="text-neon">Operational</span>
                 </div>
                 <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/5">
-                  <motion.div
+                  <div
+                    ref={progressFillRef}
                     className="h-full rounded-full bg-gradient-to-r from-neon via-electric to-cyan-100 shadow-[0_0_18px_rgba(0,229,255,0.65)]"
-                    initial={{ width: '28%' }}
-                    animate={{ width: ['28%', '72%', '44%', '86%', '28%'] }}
-                    transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
                   />
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-3 text-center text-xs uppercase tracking-[0.28em] text-cyan-50/55">
@@ -181,7 +237,7 @@ export function Hero() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

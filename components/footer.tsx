@@ -35,7 +35,7 @@ export function Footer() {
           <div className="mt-8 flex flex-col gap-4 border-t border-white/8 pt-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
             <p>Copyright © 2026 Hack To Night. All rights reserved.</p>
             <div className="flex flex-wrap gap-4">
-              <span>Built for an immersive conference experience.</span>
+              <span>Made with ❤️ by NSBM FOSS Community</span>
             </div>
           </div>
         </div>

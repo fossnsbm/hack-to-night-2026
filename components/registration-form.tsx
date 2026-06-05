@@ -1,10 +1,11 @@
 "use client";
 
-import { AnimatePresence, motion } from 'framer-motion';
+import gsap from 'gsap';
 import { CheckCircle2, LoaderCircle, Send, ShieldCheck } from 'lucide-react';
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { registrationFields } from '@/lib/site-content';
 import { SectionHeading } from '@/components/section-heading';
+import { useGsapReveal } from '@/lib/use-gsap-reveal';
 
 type FormState = Record<string, string>;
 
@@ -23,6 +24,8 @@ export function RegistrationForm() {
   const [errors, setErrors] = useState<ErrorState>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
 
   const validationRules = useMemo(
     () => ({
@@ -34,6 +37,20 @@ export function RegistrationForm() {
     }),
     []
   );
+
+  useGsapReveal(sectionRef, { selector: '[data-gsap-reveal]', y: 18, duration: 0.6, stagger: 0.06, threshold: 0.18 });
+
+  useEffect(() => {
+    if (!panelRef.current) {
+      return;
+    }
+
+    gsap.fromTo(
+      panelRef.current,
+      { opacity: 0, y: 12, scale: 0.98 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'power2.out', overwrite: 'auto' }
+    );
+  }, [success]);
 
   const handleChange = (name: keyof FormState, value: string) => {
     setValues((current) => ({ ...current, [name]: value }));
@@ -66,7 +83,7 @@ export function RegistrationForm() {
   };
 
   return (
-    <section id="register" className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+    <section ref={sectionRef} id="register" className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Registration"
@@ -74,11 +91,8 @@ export function RegistrationForm() {
           description="A futuristic registration experience with responsive validation, neon inputs, and a celebratory success state."
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7 }}
+        <div
+          data-gsap-reveal
           className="section-card relative mt-16 overflow-hidden p-5 shadow-strong sm:p-8 lg:p-10"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,229,255,0.12),transparent_30%),linear-gradient(135deg,rgba(255,255,255,0.03),transparent_45%)]" />
@@ -91,12 +105,9 @@ export function RegistrationForm() {
 
               <div className="grid gap-5 sm:grid-cols-2">
                 {registrationFields.map((field, index) => (
-                  <motion.label
+                  <label
                     key={field.name}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    data-gsap-reveal
                     className={field.name === 'university' ? 'sm:col-span-2' : ''}
                   >
                     <span className="mb-2 block text-sm font-medium text-slate-200">{field.label}</span>
@@ -111,7 +122,7 @@ export function RegistrationForm() {
                     {errors[field.name as keyof FormState] ? (
                       <span className="mt-2 block text-sm text-red-300">{errors[field.name as keyof FormState]}</span>
                     ) : null}
-                  </motion.label>
+                  </label>
                 ))}
               </div>
 
@@ -125,64 +136,45 @@ export function RegistrationForm() {
               </button>
             </form>
 
-            <div className="relative flex min-h-[24rem] items-center justify-center overflow-hidden rounded-[1.75rem] border border-white/10 bg-black/40 p-6">
+            <div ref={panelRef} className="relative flex min-h-[24rem] items-center justify-center overflow-hidden rounded-[1.75rem] border border-white/10 bg-black/40 p-6">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.16),transparent_50%)]" />
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neon to-transparent opacity-70" />
               <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-electric to-transparent opacity-70" />
 
-              <AnimatePresence mode="wait">
-                {success ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.86, y: 10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.92 }}
-                    transition={{ duration: 0.45 }}
-                    className="relative text-center"
-                  >
-                    <motion.div
-                      animate={{ scale: [1, 1.08, 1] }}
-                      transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                      className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-neon/40 bg-neon/10 text-neon shadow-strong"
-                    >
-                      <CheckCircle2 className="h-12 w-12" />
-                    </motion.div>
-                    <h3 className="mt-6 font-display text-3xl text-white text-glow">Registration Complete</h3>
-                    <p className="mt-3 max-w-sm text-base leading-8 text-slate-300">
-                      Your team has been synced into the grid. Our organizers will follow up with the next steps.
+              {success ? (
+                <div key="success" className="relative text-center">
+                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-neon/40 bg-neon/10 text-neon shadow-strong">
+                    <CheckCircle2 className="h-12 w-12" />
+                  </div>
+                  <h3 className="mt-6 font-display text-3xl text-white text-glow">Registration Complete</h3>
+                  <p className="mt-3 max-w-sm text-base leading-8 text-slate-300">
+                    Your team has been synced into the grid. Our organizers will follow up with the next steps.
+                  </p>
+                </div>
+              ) : (
+                <div key="preview" className="relative flex w-full max-w-md flex-col gap-6">
+                  <div className="glass-panel rounded-[1.6rem] p-6">
+                    <p className="text-xs uppercase tracking-[0.5em] text-slate-400">Submission Protocol</p>
+                    <h3 className="mt-3 font-display text-2xl text-white text-glow">Ready for the portal</h3>
+                    <p className="mt-4 text-sm leading-7 text-slate-300">
+                      The form supports instant validation and a success state tailored for a premium cyberpunk event.
                     </p>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="preview"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="relative flex w-full max-w-md flex-col gap-6"
-                  >
-                    <div className="glass-panel rounded-[1.6rem] p-6">
-                      <p className="text-xs uppercase tracking-[0.5em] text-slate-400">Submission Protocol</p>
-                      <h3 className="mt-3 font-display text-2xl text-white text-glow">Ready for the portal</h3>
-                      <p className="mt-4 text-sm leading-7 text-slate-300">
-                        The form supports instant validation and a success state tailored for a premium cyberpunk event.
-                      </p>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="glass-panel rounded-2xl p-4">
+                      <div className="text-sm uppercase tracking-[0.35em] text-neon">Neon Fields</div>
+                      <div className="mt-2 text-sm text-slate-300">Clean focus states and high-contrast readability.</div>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="glass-panel rounded-2xl p-4">
-                        <div className="text-sm uppercase tracking-[0.35em] text-neon">Neon Fields</div>
-                        <div className="mt-2 text-sm text-slate-300">Clean focus states and high-contrast readability.</div>
-                      </div>
-                      <div className="glass-panel rounded-2xl p-4">
-                        <div className="text-sm uppercase tracking-[0.35em] text-electric">Instant Feedback</div>
-                        <div className="mt-2 text-sm text-slate-300">Validation that helps teams submit quickly and correctly.</div>
-                      </div>
+                    <div className="glass-panel rounded-2xl p-4">
+                      <div className="text-sm uppercase tracking-[0.35em] text-electric">Instant Feedback</div>
+                      <div className="mt-2 text-sm text-slate-300">Validation that helps teams submit quickly and correctly.</div>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

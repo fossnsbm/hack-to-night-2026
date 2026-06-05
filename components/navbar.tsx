@@ -1,18 +1,42 @@
 "use client";
 
-import { AnimatePresence, motion } from 'framer-motion';
+import gsap from 'gsap';
 import { Menu, Sparkles, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { navItems } from '@/lib/site-content';
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    if (headerRef.current) {
+      gsap.fromTo(headerRef.current, { y: -24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' });
+    }
+
+    if (menuRef.current) {
+      gsap.set(menuRef.current, { height: 0, opacity: 0 });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!menuRef.current) {
+      return;
+    }
+
+    gsap.to(menuRef.current, {
+      height: open ? 'auto' : 0,
+      opacity: open ? 1 : 0,
+      duration: 0.28,
+      ease: 'power2.out',
+      overwrite: 'auto',
+    });
+  }, [open]);
 
   return (
-    <motion.header
-      initial={{ y: -24, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+    <header
+      ref={headerRef}
       className="sticky top-0 z-50 border-b border-white/5 bg-black/35 backdrop-blur-2xl"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
@@ -57,30 +81,20 @@ export function Navbar() {
         </button>
       </div>
 
-      <AnimatePresence>
-        {open ? (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: 'easeOut' }}
-            className="overflow-hidden border-t border-white/5 bg-black/65 lg:hidden"
-          >
-            <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6">
-              {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="rounded-2xl border border-neon/10 bg-white/5 px-4 py-3 text-sm uppercase tracking-[0.24em] text-cyan-50/80 transition hover:border-neon/40 hover:bg-neon/10 hover:text-white"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </motion.header>
+      <div ref={menuRef} className="overflow-hidden border-t border-white/5 bg-black/65 lg:hidden">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6">
+          {navItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className="rounded-2xl border border-neon/10 bg-white/5 px-4 py-3 text-sm uppercase tracking-[0.24em] text-cyan-50/80 transition hover:border-neon/40 hover:bg-neon/10 hover:text-white"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </header>
   );
 }
