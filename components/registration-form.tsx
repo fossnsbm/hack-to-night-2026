@@ -2,71 +2,164 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2, LoaderCircle, Send, ShieldCheck } from 'lucide-react';
-import { FormEvent, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import * as z from 'zod';
 import { registrationFields } from '@/lib/site-content';
 import { SectionHeading } from '@/components/section-heading';
+import { useAuthActions } from '@convex-dev/auth/react';
 
-type FormState = Record<string, string>;
-
-type ErrorState = Partial<Record<keyof FormState, string>>;
-
-const initialState: FormState = {
-  fullName: '',
-  email: '',
-  university: '',
-  teamName: '',
-  contactNumber: ''
-};
 
 export function RegistrationForm() {
-  const [values, setValues] = useState<FormState>(initialState);
-  const [errors, setErrors] = useState<ErrorState>({});
+  const getMemberLabel = (index: number): string => {
+    if (index === 0) return "TEAM LEADER";
+    return `MEMBER ${index + 1}`;
+  }
+
+  const registrationSection = useRef<HTMLDivElement | null>(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
+
+  const [memberCount, setMemberCount] = useState(2);
+  const [currentMemberIndex, setCurrentMemberIndex] = useState(0);
+  const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { signIn } = useAuthActions()
 
-  const validationRules = useMemo(
-    () => ({
-      fullName: (value: string) => (value.trim() ? '' : 'Please enter your full name.'),
-      email: (value: string) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'Enter a valid email address.'),
-      university: (value: string) => (value.trim() ? '' : 'Please add your university.'),
-      teamName: (value: string) => (value.trim() ? '' : 'Please enter a team name.'),
-      contactNumber: (value: string) => (value.trim().length >= 8 ? '' : 'Please enter a valid contact number.')
-    }),
-    []
-  );
+  const teamMemberSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+    studentId: z.string().regex(/[0-9]{5}/, 'Invalid Student Id')
+  });
 
-  const handleChange = (name: keyof FormState, value: string) => {
-    setValues((current) => ({ ...current, [name]: value }));
-    setErrors((current) => ({ ...current, [name]: undefined }));
+  const registrationSchema = z.object({
+    teamName: z.string().min(1, 'Team name is required'),
+    email: z.email('Invalid email').regex(/@students\.nsbm\.ac\.lk$/, 'Must be an NSBM student email'),
+    phone: z.string().regex(/^07\d{8}$/, 'Contact must be in format 07XXXXXXXX'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confpassword: z.string(),
+    teamMembers: z.array(teamMemberSchema).min(2, 'At least 2 members required').max(5, 'Maximum 5 members allowed')
+  }).refine((data) => data.password === data.confpassword, {
+    message: "Passwords don't match",
+    path: ['confpassword']
+  });
+
+  useEffect(() => {
+    if (errors.length > 0 && registrationSection.current) {
+      registrationSection.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }, [errors]);
+
+  const addMember = () => {
+    if (memberCount < 5) {
+      setMemberCount(prev => prev + 1);
+      setCurrentMemberIndex(memberCount);
+    }
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const removeMember = () => {
+    if (memberCount > 2 && currentMemberIndex >= 2) {
+      setMemberCount(prev => prev - 1);
 
-    const nextErrors = Object.entries(validationRules).reduce((result, [key, rule]) => {
-      const message = rule(values[key as keyof FormState]);
-      if (message) {
-        result[key as keyof FormState] = message;
+      if (currentMemberIndex >= memberCount - 1) {
+        setCurrentMemberIndex(memberCount - 2);
       }
-      return result;
-    }, {} as ErrorState);
+    }
+  };
 
-    if (Object.keys(nextErrors).length > 0) {
-      setErrors(nextErrors);
+  const goToPrevMember = () => {
+    if (currentMemberIndex > 0) {
+      setCurrentMemberIndex(currentMemberIndex - 1);
+    }
+  };
+
+  const goToNextMember = () => {
+    if (currentMemberIndex < memberCount - 1) {
+      setCurrentMemberIndex(currentMemberIndex + 1);
+    }
+  };
+
+  const handleSubmit = async (formData: FormData) => {
+    setErrors([]);
+    setLoading(true);
+
+    const teamMembers = []
+
+    for (let i = 0; i < memberCount; i++) {
+      const name = formData.get(`teamMembers[${i}].name`);
+      const studentId = formData.get(`teamMembers[${i}].studentId`);
+      if (name && studentId) {
+        teamMembers.push({
+          name: name.toString(),
+          studentId: studentId.toString()
+        });
+      }
+    }
+
+    const data = {
+      teamName: formData.get('teamName')?.toString() || '',
+      email: formData.get('email')?.toString() || '',
+      phone: formData.get('phone')?.toString() || '',
+      password: formData.get('password')?.toString() || '',
+      confpassword: formData.get('confpassword')?.toString() || '',
+      teamMembers
+    };
+
+    const registration = registrationSchema.safeParse(data);
+
+    if (!registration.success) {
+      const errorMessages = registration.error.issues.map(err =>
+        `${err.path.join('.')}: ${err.message}`
+      );
+      setErrors(errorMessages);
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
-    await new Promise((resolve) => window.setTimeout(resolve, 1200));
-    setLoading(false);
-    setSuccess(true);
-    setValues(initialState);
+    formData.set('teamName', registration.data.teamName);
+    formData.set('teamMembers', JSON.stringify(registration.data.teamMembers));
 
-    window.setTimeout(() => setSuccess(false), 3200);
+    const teamLeaderName = registration.data.teamMembers[0]?.name;
+    if (teamLeaderName) {
+      formData.set('teamLeaderName', teamLeaderName);
+    }
+
+    try {
+      const result = await signIn('password', formData)
+
+      if (!result?.signingIn && !result?.redirect) {
+        setErrors(['Registration failed. Please try again.']);
+        setLoading(false);
+        return;
+      }
+
+      if (!result?.signingIn) {
+        setLoading(false);
+        return;
+      }
+
+      formRef.current?.reset();
+      setMemberCount(2);
+      setCurrentMemberIndex(0);
+      setErrors([]);
+      setLoading(false);
+      setSuccess(true);
+
+      window.setTimeout(() => setSuccess(false), 3200);
+    } catch (error) {
+      console.log('Registration error:', error);
+      setErrors(['Registration failed. Please try again.']);
+      setLoading(false);
+    }
   };
 
   return (
-    <section id="register" className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+    <section
+      id="register"
+      ref={registrationSection}
+      className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32"
+    >
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Registration"
@@ -83,7 +176,25 @@ export function RegistrationForm() {
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,229,255,0.12),transparent_30%),linear-gradient(135deg,rgba(255,255,255,0.03),transparent_45%)]" />
           <div className="relative grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form
+              ref={formRef}
+              onSubmit={
+                (e) => {
+                  e.preventDefault()
+                  handleSubmit(new FormData(e.currentTarget))
+                }
+              }
+              className="space-y-5">
+              {errors.length > 0 && (
+                <div className="rounded-xl border border-red-500/30 bg-red-900/20 p-4">
+                  <p className="mb-2 text-sm font-semibold text-red-300">Please fix the following errors:</p>
+                  <ul className="list-inside list-disc space-y-1 text-xs text-red-200">
+                    {errors.map((error, index) => (
+                      <li key={index}>{error}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="flex items-center gap-3 text-neon">
                 <ShieldCheck className="h-5 w-5" />
                 <span className="text-sm font-semibold uppercase tracking-[0.35em]">Secure Registration</span>
@@ -97,23 +208,121 @@ export function RegistrationForm() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
                     transition={{ duration: 0.5, delay: index * 0.05 }}
-                    className={field.name === 'university' ? 'sm:col-span-2' : ''}
                   >
                     <span className="mb-2 block text-sm font-medium text-slate-200">{field.label}</span>
                     <input
                       type={field.type}
                       name={field.name}
                       placeholder={field.placeholder}
-                      value={values[field.name]}
-                      onChange={(event) => handleChange(field.name as keyof FormState, event.target.value)}
                       className="neon-input"
                     />
-                    {errors[field.name as keyof FormState] ? (
-                      <span className="mt-2 block text-sm text-red-300">{errors[field.name as keyof FormState]}</span>
-                    ) : null}
                   </motion.label>
                 ))}
+                <motion.label
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.5, delay: 5 * 0.05 }}
+                  className="sm:col-span-2"
+                >
+                  <span className="mb-2 block text-sm font-medium text-slate-200">Team Members</span>
+                  <div className="glass-panel rounded-[1.6rem] p-6">
+                    <div className='flex justify-between items-center'>
+                      <p className='text-sm mb-2'>Minimum of 2, maximum of 5 members allowed</p>
+                      <button
+                        type="button"
+                        className="rounded px-4 py-2 text-xs font-semibold neon-button disabled:cursor-not-allowed disabled:opacity-70"
+                        onClick={addMember}
+                        disabled={memberCount >= 5}
+                      >
+                        ADD MEMBER
+                      </button>
+                    </div>
+                    <div className='p-4 mt-4'>
+                      {memberCount > 0 && (
+                        <div className="rounded  p-5">
+                          <div className="mb-5 flex items-center justify-center gap-5">
+                            <button
+                              type="button"
+                              className="flex h-12 w-12 items-center justify-center rounded-lg neon-border text-4xl leading-none transition-all disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                              onClick={goToPrevMember}
+                              disabled={currentMemberIndex === 0}
+                            >
+                              ‹
+                            </button>
+                            <span className="min-w-12 text-center text-sm">
+                              {currentMemberIndex + 1} / {memberCount}
+                            </span>
+                            <button
+                              type="button"
+                              className="flex h-12 w-12 items-center justify-center rounded-lg neon-border text-4xl leading-none transition-all disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                              onClick={goToNextMember}
+                              disabled={currentMemberIndex === memberCount - 1}
+                            >
+                              ›
+                            </button>
+
+                            {currentMemberIndex >= 2 && (
+                              <button
+                                type="button"
+                                className="ml-2 flex h-12 w-12 items-center justify-center rounded-lg border border-red-400/30 text-3xl leading-none text-red-400 transition-all hover:border-red-400 hover:bg-red-400/10 hover:text-red-300"
+                                onClick={removeMember}
+                                aria-label="Remove member"
+                              >
+                                ✕
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Render all member inputs but only show current one */}
+                          {Array.from({ length: memberCount }).map((_, index) => (
+                            <div
+                              key={index}
+                              className={`${index === currentMemberIndex ? '' : 'hidden'}`}
+                            >
+                              {/* Member Label */}
+                              <div className="mb-3 text-sm font-semibold tracking-[0.08em]">
+                                {getMemberLabel(index)}
+                              </div>
+
+                              <div className="grid gap-4 sm:grid-cols-2">
+                                <div>
+                                  <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
+                                    NAME
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name={`teamMembers[${index}].name`}
+                                    placeholder="FULL NAME"
+                                    required
+                                    className='neon-input'
+                                  />
+                                </div>
+                                <div>
+                                  <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
+                                    STUDENT ID
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name={`teamMembers[${index}].studentId`}
+                                    placeholder="STUDENT ID NUMBER"
+                                    required
+                                    className='neon-input'
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+
+                    </div>
+                  </div>
+                </motion.label>
               </div>
+
+              <input type='hidden' name='flow' value='signUp' />
 
               <button
                 type="submit"
@@ -158,7 +367,7 @@ export function RegistrationForm() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="relative flex w-full max-w-md flex-col gap-6"
+                    className="relative flex w-full max-w-md flex-col gap-8"
                   >
                     <div className="glass-panel rounded-[1.6rem] p-6">
                       <p className="text-xs uppercase tracking-[0.5em] text-slate-400">Submission Protocol</p>
