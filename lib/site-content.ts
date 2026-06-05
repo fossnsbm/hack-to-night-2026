@@ -61,7 +61,7 @@ export const faqs = [
   },
   {
     question: 'Can I join without a team?',
-    answer: 'Yes. Solo participants can register and connect with teammates before the event begins.'
+    answer: 'No. You are required to participate as a team'
   },
   {
     question: 'What should I bring?',
