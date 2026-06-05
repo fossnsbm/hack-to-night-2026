@@ -5,7 +5,7 @@ import { ArrowRight, PlayCircle } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { stats } from '@/lib/site-content';
 
-const targetDate = new Date('2026-12-12T18:00:00+05:30').getTime();
+const targetDate = new Date('2026-06-19T18:00:00+05:30').getTime();
 
 function useCountdown() {
   const [timeLeft, setTimeLeft] = useState(() => targetDate - Date.now());
