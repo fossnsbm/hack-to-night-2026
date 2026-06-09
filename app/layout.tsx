@@ -1,40 +1,46 @@
-import type { Metadata } from 'next';
-import { Orbitron, Rajdhani } from 'next/font/google';
-import './globals.css';
-import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
+import type { Metadata } from 'next'
+import { Orbitron, Rajdhani } from 'next/font/google'
+import './globals.css'
+import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server'
 
 const orbitron = Orbitron({
   subsets: ['latin'],
   variable: '--font-display',
-  display: 'swap'
-});
+  display: 'swap',
+})
 
 const rajdhani = Rajdhani({
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',
-  weight: ['400', '500', '600', '700']
-});
+  weight: ['400', '500', '600', '700'],
+})
 
 export const metadata: Metadata = {
   title: 'Hack To Night 2026',
-  description: 'A TRON: Legacy-inspired hackathon experience for NSBM FOSS Community.',
+  description:
+    'A TRON: Legacy-inspired hackathon experience for NSBM FOSS Community.',
   metadataBase: new URL('https://hacktonight2026.example'),
   openGraph: {
     title: 'Hack To Night 2026',
-    description: 'Enter the grid and build the future with NSBM FOSS Community.',
-    type: 'website'
-  }
-};
+    description:
+      'Enter the grid and build the future with NSBM FOSS Community.',
+    type: 'website',
+  },
+}
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <ConvexAuthNextjsServerProvider>
       <html lang="en" className="scroll-smooth">
-        <body className={`${orbitron.variable} ${rajdhani.variable} bg-bg font-body text-ink antialiased`}>
+        <body
+          className={`${orbitron.variable} ${rajdhani.variable} bg-bg font-body text-ink antialiased`}
+        >
           {children}
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>
-  );
+  )
 }

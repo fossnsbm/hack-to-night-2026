@@ -1,6 +1,6 @@
-import { defineSchema, defineTable } from "convex/server";
-import { authTables } from "@convex-dev/auth/server";
-import { v } from "convex/values";
+import { defineSchema, defineTable } from 'convex/server'
+import { authTables } from '@convex-dev/auth/server'
+import { v } from 'convex/values'
 
 const schema = defineSchema({
   ...authTables,
@@ -12,17 +12,19 @@ const schema = defineSchema({
     phone: v.string(),
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
-  }).index("email", ["email"]),
+  }).index('email', ['email']),
 
   teams: defineTable({
-    userId: v.id("users"),
+    userId: v.id('users'),
     teamName: v.string(),
     teamLeaderName: v.string(),
-    teamMembers: v.array(v.object({
-      name: v.string(),
-      studentId: v.string(),
-    })),
-  }).index("by_userId", ["userId"]),
-});
+    teamMembers: v.array(
+      v.object({
+        name: v.string(),
+        studentId: v.string(),
+      }),
+    ),
+  }).index('by_userId', ['userId']),
+})
 
-export default schema;
+export default schema

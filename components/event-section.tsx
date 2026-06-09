@@ -1,12 +1,15 @@
-"use client";
+'use client'
 
-import { motion } from 'framer-motion';
-import { SectionHeading } from '@/components/section-heading';
-import { eventFeatures } from '@/lib/site-content';
+import { motion } from 'framer-motion'
+import { SectionHeading } from '@/components/section-heading'
+import { eventFeatures } from '@/lib/site-content'
 
 export function EventSection() {
   return (
-    <section id="event" className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+    <section
+      id="event"
+      className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32"
+    >
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="About The Event"
@@ -30,8 +33,12 @@ export function EventSection() {
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-neon/30 bg-neon/10 text-neon shadow-glow">
                   <feature.icon className="h-6 w-6" />
                 </div>
-                <h3 className="mt-5 font-display text-2xl text-white text-glow">{feature.title}</h3>
-                <p className="mt-4 flex-1 text-base leading-8 text-slate-300">{feature.description}</p>
+                <h3 className="mt-5 font-display text-2xl text-white text-glow">
+                  {feature.title}
+                </h3>
+                <p className="mt-4 flex-1 text-base leading-8 text-slate-300">
+                  {feature.description}
+                </p>
                 <div className="mt-6 h-px w-full bg-gradient-to-r from-neon via-electric to-transparent opacity-60" />
               </div>
             </motion.article>
@@ -39,5 +46,5 @@ export function EventSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

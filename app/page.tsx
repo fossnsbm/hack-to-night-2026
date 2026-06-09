@@ -1,12 +1,12 @@
-import { BackgroundEffects } from '@/components/background-effects';
-import { Hero } from '@/components/hero';
-import { AboutSection } from '@/components/about';
-import { EventSection } from '@/components/event-section';
-import { RegistrationForm } from '@/components/registration-form';
-import { FAQSection } from '@/components/faq';
-import { Footer } from '@/components/footer';
-import { Navbar } from '@/components/navbar';
-import { ConvexClientProvider } from './ConvexClientProvider';
+import { BackgroundEffects } from '@/components/background-effects'
+import { Hero } from '@/components/hero'
+import { AboutSection } from '@/components/about'
+import { EventSection } from '@/components/event-section'
+import { RegistrationForm } from '@/components/registration-form'
+import { FAQSection } from '@/components/faq'
+import { Footer } from '@/components/footer'
+import { Navbar } from '@/components/navbar'
+import { ConvexClientProvider } from './ConvexClientProvider'
 
 export default function Page() {
   return (
@@ -32,5 +32,5 @@ export default function Page() {
         <Footer />
       </div>
     </div>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import { Password } from "@convex-dev/auth/providers/Password";
-import { DataModel } from "./_generated/dataModel";
+import { Password } from '@convex-dev/auth/providers/Password'
+import { DataModel } from './_generated/dataModel'
 
 export default Password<DataModel>({
   profile(params, _ctx) {
@@ -13,6 +13,6 @@ export default Password<DataModel>({
       teamMembers: params.teamMembers
         ? JSON.parse(params.teamMembers as string)
         : undefined,
-    };
+    }
   },
-});
+})

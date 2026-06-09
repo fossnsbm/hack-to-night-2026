@@ -8,8 +8,10 @@ export default function Loading() {
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-neon border-t-transparent" />
           </div>
         </div>
-        <p className="mt-6 text-center font-display text-sm uppercase tracking-[0.36em] text-neon text-glow">Initializing the Grid</p>
+        <p className="mt-6 text-center font-display text-sm uppercase tracking-[0.36em] text-neon text-glow">
+          Initializing the Grid
+        </p>
       </div>
     </div>
-  );
+  )
 }

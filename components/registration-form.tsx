@@ -1,99 +1,107 @@
-"use client";
+'use client'
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle2, LoaderCircle, Send, ShieldCheck } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import * as z from 'zod';
-import { registrationFields } from '@/lib/site-content';
-import { SectionHeading } from '@/components/section-heading';
-import { useAuthActions } from '@convex-dev/auth/react';
-
+import { AnimatePresence, motion } from 'framer-motion'
+import { CheckCircle2, LoaderCircle, Send, ShieldCheck } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import * as z from 'zod'
+import { registrationFields } from '@/lib/site-content'
+import { SectionHeading } from '@/components/section-heading'
+import { useAuthActions } from '@convex-dev/auth/react'
 
 export function RegistrationForm() {
   const getMemberLabel = (index: number): string => {
-    if (index === 0) return "TEAM LEADER";
-    return `MEMBER ${index + 1}`;
+    if (index === 0) return 'TEAM LEADER'
+    return `MEMBER ${index + 1}`
   }
 
-  const registrationSection = useRef<HTMLDivElement | null>(null);
-  const formRef = useRef<HTMLFormElement | null>(null);
+  const registrationSection = useRef<HTMLDivElement | null>(null)
+  const formRef = useRef<HTMLFormElement | null>(null)
 
-  const [memberCount, setMemberCount] = useState(2);
-  const [currentMemberIndex, setCurrentMemberIndex] = useState(0);
-  const [errors, setErrors] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [memberCount, setMemberCount] = useState(2)
+  const [currentMemberIndex, setCurrentMemberIndex] = useState(0)
+  const [errors, setErrors] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
   const { signIn } = useAuthActions()
 
   const teamMemberSchema = z.object({
     name: z.string().min(1, 'Name is required'),
-    studentId: z.string().regex(/[0-9]{5}/, 'Invalid Student Id')
-  });
+    studentId: z.string().regex(/[0-9]{5}/, 'Invalid Student Id'),
+  })
 
-  const registrationSchema = z.object({
-    teamName: z.string().min(1, 'Team name is required'),
-    email: z.email('Invalid email').regex(/@students\.nsbm\.ac\.lk$/, 'Must be an NSBM student email'),
-    phone: z.string().regex(/^07\d{8}$/, 'Contact must be in format 07XXXXXXXX'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-    confpassword: z.string(),
-    teamMembers: z.array(teamMemberSchema).min(2, 'At least 2 members required').max(5, 'Maximum 5 members allowed')
-  }).refine((data) => data.password === data.confpassword, {
-    message: "Passwords don't match",
-    path: ['confpassword']
-  });
+  const registrationSchema = z
+    .object({
+      teamName: z.string().min(1, 'Team name is required'),
+      email: z
+        .email('Invalid email')
+        .regex(/@students\.nsbm\.ac\.lk$/, 'Must be an NSBM student email'),
+      phone: z
+        .string()
+        .regex(/^07\d{8}$/, 'Contact must be in format 07XXXXXXXX'),
+      password: z.string().min(8, 'Password must be at least 8 characters'),
+      confpassword: z.string(),
+      teamMembers: z
+        .array(teamMemberSchema)
+        .min(2, 'At least 2 members required')
+        .max(5, 'Maximum 5 members allowed'),
+    })
+    .refine((data) => data.password === data.confpassword, {
+      message: "Passwords don't match",
+      path: ['confpassword'],
+    })
 
   useEffect(() => {
     if (errors.length > 0 && registrationSection.current) {
       registrationSection.current.scrollIntoView({
         behavior: 'smooth',
-        block: 'start'
-      });
+        block: 'start',
+      })
     }
-  }, [errors]);
+  }, [errors])
 
   const addMember = () => {
     if (memberCount < 5) {
-      setMemberCount(prev => prev + 1);
-      setCurrentMemberIndex(memberCount);
+      setMemberCount((prev) => prev + 1)
+      setCurrentMemberIndex(memberCount)
     }
-  };
+  }
 
   const removeMember = () => {
     if (memberCount > 2 && currentMemberIndex >= 2) {
-      setMemberCount(prev => prev - 1);
+      setMemberCount((prev) => prev - 1)
 
       if (currentMemberIndex >= memberCount - 1) {
-        setCurrentMemberIndex(memberCount - 2);
+        setCurrentMemberIndex(memberCount - 2)
       }
     }
-  };
+  }
 
   const goToPrevMember = () => {
     if (currentMemberIndex > 0) {
-      setCurrentMemberIndex(currentMemberIndex - 1);
+      setCurrentMemberIndex(currentMemberIndex - 1)
     }
-  };
+  }
 
   const goToNextMember = () => {
     if (currentMemberIndex < memberCount - 1) {
-      setCurrentMemberIndex(currentMemberIndex + 1);
+      setCurrentMemberIndex(currentMemberIndex + 1)
     }
-  };
+  }
 
   const handleSubmit = async (formData: FormData) => {
-    setErrors([]);
-    setLoading(true);
+    setErrors([])
+    setLoading(true)
 
     const teamMembers = []
 
     for (let i = 0; i < memberCount; i++) {
-      const name = formData.get(`teamMembers[${i}].name`);
-      const studentId = formData.get(`teamMembers[${i}].studentId`);
+      const name = formData.get(`teamMembers[${i}].name`)
+      const studentId = formData.get(`teamMembers[${i}].studentId`)
       if (name && studentId) {
         teamMembers.push({
           name: name.toString(),
-          studentId: studentId.toString()
-        });
+          studentId: studentId.toString(),
+        })
       }
     }
 
@@ -103,56 +111,56 @@ export function RegistrationForm() {
       phone: formData.get('phone')?.toString() || '',
       password: formData.get('password')?.toString() || '',
       confpassword: formData.get('confpassword')?.toString() || '',
-      teamMembers
-    };
-
-    const registration = registrationSchema.safeParse(data);
-
-    if (!registration.success) {
-      const errorMessages = registration.error.issues.map(err =>
-        `${err.path.join('.')}: ${err.message}`
-      );
-      setErrors(errorMessages);
-      setLoading(false);
-      return;
+      teamMembers,
     }
 
-    formData.set('teamName', registration.data.teamName);
-    formData.set('teamMembers', JSON.stringify(registration.data.teamMembers));
+    const registration = registrationSchema.safeParse(data)
 
-    const teamLeaderName = registration.data.teamMembers[0]?.name;
+    if (!registration.success) {
+      const errorMessages = registration.error.issues.map(
+        (err) => `${err.path.join('.')}: ${err.message}`,
+      )
+      setErrors(errorMessages)
+      setLoading(false)
+      return
+    }
+
+    formData.set('teamName', registration.data.teamName)
+    formData.set('teamMembers', JSON.stringify(registration.data.teamMembers))
+
+    const teamLeaderName = registration.data.teamMembers[0]?.name
     if (teamLeaderName) {
-      formData.set('teamLeaderName', teamLeaderName);
+      formData.set('teamLeaderName', teamLeaderName)
     }
 
     try {
       const result = await signIn('password', formData)
 
       if (!result?.signingIn && !result?.redirect) {
-        setErrors(['Registration failed. Please try again.']);
-        setLoading(false);
-        return;
+        setErrors(['Registration failed. Please try again.'])
+        setLoading(false)
+        return
       }
 
       if (!result?.signingIn) {
-        setLoading(false);
-        return;
+        setLoading(false)
+        return
       }
 
-      formRef.current?.reset();
-      setMemberCount(2);
-      setCurrentMemberIndex(0);
-      setErrors([]);
-      setLoading(false);
-      setSuccess(true);
+      formRef.current?.reset()
+      setMemberCount(2)
+      setCurrentMemberIndex(0)
+      setErrors([])
+      setLoading(false)
+      setSuccess(true)
 
-      window.setTimeout(() => setSuccess(false), 3200);
+      window.setTimeout(() => setSuccess(false), 3200)
     } catch (error) {
-      console.log('Registration error:', error);
-      setErrors(['Registration failed. Please try again.']);
-      setLoading(false);
+      console.log('Registration error:', error)
+      setErrors(['Registration failed. Please try again.'])
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <section
@@ -178,16 +186,17 @@ export function RegistrationForm() {
           <div className="relative grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
             <form
               ref={formRef}
-              onSubmit={
-                (e) => {
-                  e.preventDefault()
-                  handleSubmit(new FormData(e.currentTarget))
-                }
-              }
-              className="space-y-5">
+              onSubmit={(e) => {
+                e.preventDefault()
+                handleSubmit(new FormData(e.currentTarget))
+              }}
+              className="space-y-5"
+            >
               {errors.length > 0 && (
                 <div className="rounded-xl border border-red-500/30 bg-red-900/20 p-4">
-                  <p className="mb-2 text-sm font-semibold text-red-300">Please fix the following errors:</p>
+                  <p className="mb-2 text-sm font-semibold text-red-300">
+                    Please fix the following errors:
+                  </p>
                   <ul className="list-inside list-disc space-y-1 text-xs text-red-200">
                     {errors.map((error, index) => (
                       <li key={index}>{error}</li>
@@ -197,7 +206,9 @@ export function RegistrationForm() {
               )}
               <div className="flex items-center gap-3 text-neon">
                 <ShieldCheck className="h-5 w-5" />
-                <span className="text-sm font-semibold uppercase tracking-[0.35em]">Secure Registration</span>
+                <span className="text-sm font-semibold uppercase tracking-[0.35em]">
+                  Secure Registration
+                </span>
               </div>
 
               <div className="grid gap-5 sm:grid-cols-2">
@@ -209,7 +220,9 @@ export function RegistrationForm() {
                     viewport={{ once: true, amount: 0.2 }}
                     transition={{ duration: 0.5, delay: index * 0.05 }}
                   >
-                    <span className="mb-2 block text-sm font-medium text-slate-200">{field.label}</span>
+                    <span className="mb-2 block text-sm font-medium text-slate-200">
+                      {field.label}
+                    </span>
                     <input
                       type={field.type}
                       name={field.name}
@@ -218,17 +231,21 @@ export function RegistrationForm() {
                     />
                   </motion.label>
                 ))}
-                <motion.label
+                <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.5, delay: 5 * 0.05 }}
                   className="sm:col-span-2"
                 >
-                  <span className="mb-2 block text-sm font-medium text-slate-200">Team Members</span>
+                  <span className="mb-2 block text-sm font-medium text-slate-200">
+                    Team Members
+                  </span>
                   <div className="glass-panel rounded-[1.6rem] p-6">
-                    <div className='flex justify-between items-center'>
-                      <p className='text-sm mb-2'>Minimum of 2, maximum of 5 members allowed</p>
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm mb-2">
+                        Minimum of 2, maximum of 5 members allowed
+                      </p>
                       <button
                         type="button"
                         className="rounded px-4 py-2 text-xs font-semibold neon-button disabled:cursor-not-allowed disabled:opacity-70"
@@ -238,7 +255,7 @@ export function RegistrationForm() {
                         ADD MEMBER
                       </button>
                     </div>
-                    <div className='p-4 mt-4'>
+                    <div className="p-4 mt-4">
                       {memberCount > 0 && (
                         <div className="rounded  p-5">
                           <div className="mb-5 flex items-center justify-center gap-5">
@@ -275,61 +292,65 @@ export function RegistrationForm() {
                           </div>
 
                           {/* Render all member inputs but only show current one */}
-                          {Array.from({ length: memberCount }).map((_, index) => (
-                            <div
-                              key={index}
-                              className={`${index === currentMemberIndex ? '' : 'hidden'}`}
-                            >
-                              {/* Member Label */}
-                              <div className="mb-3 text-sm font-semibold tracking-[0.08em]">
-                                {getMemberLabel(index)}
-                              </div>
+                          {Array.from({ length: memberCount }).map(
+                            (_, index) => (
+                              <div
+                                key={index}
+                                className={`${index === currentMemberIndex ? '' : 'hidden'}`}
+                              >
+                                {/* Member Label */}
+                                <div className="mb-3 text-sm font-semibold tracking-[0.08em]">
+                                  {getMemberLabel(index)}
+                                </div>
 
-                              <div className="grid gap-4 sm:grid-cols-2">
-                                <div>
-                                  <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
-                                    NAME
-                                  </label>
-                                  <input
-                                    type="text"
-                                    name={`teamMembers[${index}].name`}
-                                    placeholder="FULL NAME"
-                                    required
-                                    className='neon-input'
-                                  />
-                                </div>
-                                <div>
-                                  <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
-                                    STUDENT ID
-                                  </label>
-                                  <input
-                                    type="text"
-                                    name={`teamMembers[${index}].studentId`}
-                                    placeholder="STUDENT ID NUMBER"
-                                    required
-                                    className='neon-input'
-                                  />
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                  <div>
+                                    <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
+                                      NAME
+                                    </label>
+                                    <input
+                                      type="text"
+                                      name={`teamMembers[${index}].name`}
+                                      placeholder="FULL NAME"
+                                      required
+                                      className="neon-input"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
+                                      STUDENT ID
+                                    </label>
+                                    <input
+                                      type="text"
+                                      name={`teamMembers[${index}].studentId`}
+                                      placeholder="STUDENT ID NUMBER"
+                                      required
+                                      className="neon-input"
+                                    />
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            ),
+                          )}
                         </div>
                       )}
-
-
                     </div>
                   </div>
-                </motion.label>
+                </motion.div>
               </div>
 
-              <input type='hidden' name='flow' value='signUp' />
+              <input type="hidden" name="flow" value="signUp" />
 
               <button
                 type="submit"
                 disabled={loading}
                 className="neon-button disabled:cursor-not-allowed disabled:opacity-70"
               >
-                {loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                {loading ? (
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
                 Register
               </button>
             </form>
@@ -351,14 +372,21 @@ export function RegistrationForm() {
                   >
                     <motion.div
                       animate={{ scale: [1, 1.08, 1] }}
-                      transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                      transition={{
+                        duration: 1.4,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                      }}
                       className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-neon/40 bg-neon/10 text-neon shadow-strong"
                     >
                       <CheckCircle2 className="h-12 w-12" />
                     </motion.div>
-                    <h3 className="mt-6 font-display text-3xl text-white text-glow">Registration Complete</h3>
+                    <h3 className="mt-6 font-display text-3xl text-white text-glow">
+                      Registration Complete
+                    </h3>
                     <p className="mt-3 max-w-sm text-base leading-8 text-slate-300">
-                      Your team has been synced into the grid. Our organizers will follow up with the next steps.
+                      Your team has been synced into the grid. Our organizers
+                      will follow up with the next steps.
                     </p>
                   </motion.div>
                 ) : (
@@ -370,20 +398,34 @@ export function RegistrationForm() {
                     className="relative flex w-full max-w-md flex-col gap-8"
                   >
                     <div className="glass-panel rounded-[1.6rem] p-6">
-                      <p className="text-xs uppercase tracking-[0.5em] text-slate-400">Submission Protocol</p>
-                      <h3 className="mt-3 font-display text-2xl text-white text-glow">Ready for the portal</h3>
+                      <p className="text-xs uppercase tracking-[0.5em] text-slate-400">
+                        Submission Protocol
+                      </p>
+                      <h3 className="mt-3 font-display text-2xl text-white text-glow">
+                        Ready for the portal
+                      </h3>
                       <p className="mt-4 text-sm leading-7 text-slate-300">
-                        The form supports instant validation and a success state tailored for a premium cyberpunk event.
+                        The form supports instant validation and a success state
+                        tailored for a premium cyberpunk event.
                       </p>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="glass-panel rounded-2xl p-4">
-                        <div className="text-sm uppercase tracking-[0.35em] text-neon">Neon Fields</div>
-                        <div className="mt-2 text-sm text-slate-300">Clean focus states and high-contrast readability.</div>
+                        <div className="text-sm uppercase tracking-[0.35em] text-neon">
+                          Neon Fields
+                        </div>
+                        <div className="mt-2 text-sm text-slate-300">
+                          Clean focus states and high-contrast readability.
+                        </div>
                       </div>
                       <div className="glass-panel rounded-2xl p-4">
-                        <div className="text-sm uppercase tracking-[0.35em] text-electric">Instant Feedback</div>
-                        <div className="mt-2 text-sm text-slate-300">Validation that helps teams submit quickly and correctly.</div>
+                        <div className="text-sm uppercase tracking-[0.35em] text-electric">
+                          Instant Feedback
+                        </div>
+                        <div className="mt-2 text-sm text-slate-300">
+                          Validation that helps teams submit quickly and
+                          correctly.
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -394,5 +436,5 @@ export function RegistrationForm() {
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

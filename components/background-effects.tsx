@@ -1,21 +1,25 @@
-"use client";
+'use client'
 
-import { motion, useScroll, useSpring } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
 export function BackgroundEffects() {
-  const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.2 });
-  const [cursor, setCursor] = useState({ x: -200, y: -200 });
+  const { scrollYProgress } = useScroll()
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 28,
+    mass: 0.2,
+  })
+  const [cursor, setCursor] = useState({ x: -200, y: -200 })
 
   useEffect(() => {
     const handleMove = (event: PointerEvent) => {
-      setCursor({ x: event.clientX, y: event.clientY });
-    };
+      setCursor({ x: event.clientX, y: event.clientY })
+    }
 
-    window.addEventListener('pointermove', handleMove, { passive: true });
-    return () => window.removeEventListener('pointermove', handleMove);
-  }, []);
+    window.addEventListener('pointermove', handleMove, { passive: true })
+    return () => window.removeEventListener('pointermove', handleMove)
+  }, [])
 
   return (
     <>
@@ -41,7 +45,10 @@ export function BackgroundEffects() {
         animate={{ x: cursor.x, y: cursor.y }}
         transition={{ type: 'spring', stiffness: 90, damping: 20, mass: 0.2 }}
       />
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[1] opacity-20 mix-blend-screen [background-image:linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] [background-size:36px_36px]" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-[1] opacity-20 mix-blend-screen [background-image:linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] [background-size:36px_36px]"
+      />
     </>
-  );
+  )
 }

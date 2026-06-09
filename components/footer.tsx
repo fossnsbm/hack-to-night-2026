@@ -1,7 +1,7 @@
-import { Facebook, Github, Instagram, Linkedin, Mail } from 'lucide-react';
-import { footerLinks } from '@/lib/site-content';
+import { Facebook, Github, Instagram, Linkedin, Mail } from 'lucide-react'
+import { footerLinks } from '@/lib/site-content'
 
-const socialIcons = [Github, Instagram, Linkedin, Mail, Facebook];
+const socialIcons = [Github, Instagram, Linkedin, Mail, Facebook]
 
 export function Footer() {
   return (
@@ -11,13 +11,17 @@ export function Footer() {
         <div className="glass-panel rounded-[2rem] px-6 py-8 sm:px-8">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="font-display text-2xl text-white text-glow">Hack To Night 2026</p>
-              <p className="mt-2 text-sm uppercase tracking-[0.4em] text-slate-400">NSBM FOSS Community</p>
+              <p className="font-display text-2xl text-white text-glow">
+                Hack To Night 2026
+              </p>
+              <p className="mt-2 text-sm uppercase tracking-[0.4em] text-slate-400">
+                NSBM FOSS Community
+              </p>
             </div>
 
             <div className="flex flex-wrap gap-3">
               {footerLinks.map((link, index) => {
-                const Icon = socialIcons[index] ?? Mail;
+                const Icon = socialIcons[index] ?? Mail
                 return (
                   <a
                     key={link.label}
@@ -27,7 +31,7 @@ export function Footer() {
                   >
                     <Icon className="h-5 w-5" />
                   </a>
-                );
+                )
               })}
             </div>
           </div>
@@ -41,5 +45,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

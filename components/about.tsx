@@ -1,26 +1,29 @@
-"use client";
+'use client'
 
-import { motion } from 'framer-motion';
-import { BookOpen, Landmark, Sparkles, Workflow } from 'lucide-react';
-import { highlights } from '@/lib/site-content';
-import { SectionHeading } from '@/components/section-heading';
+import { motion } from 'framer-motion'
+import { BookOpen, Landmark, Sparkles, Workflow } from 'lucide-react'
+import { highlights } from '@/lib/site-content'
+import { SectionHeading } from '@/components/section-heading'
 
 const storyCards = [
   {
     icon: BookOpen,
     title: 'Who We Are',
-    body: 'NSBM FOSS Community is a student-driven open-source community focused on innovation, collaboration, and technology empowerment.'
+    body: 'NSBM FOSS Community is a student-driven open-source community focused on innovation, collaboration, and technology empowerment.',
   },
   {
     icon: Sparkles,
     title: 'Our Mission',
-    body: 'To inspire students to create impactful solutions through open-source technologies and collaborative learning.'
-  }
-];
+    body: 'To inspire students to create impactful solutions through open-source technologies and collaborative learning.',
+  },
+]
 
 export function AboutSection() {
   return (
-    <section id="about" className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+    <section
+      id="about"
+      className="relative px-4 py-24 sm:px-6 lg:px-8 lg:py-32"
+    >
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="About Us"
@@ -45,8 +48,12 @@ export function AboutSection() {
                   <card.icon className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-display text-2xl text-white text-glow">{card.title}</h3>
-                  <p className="mt-4 max-w-xl text-base leading-8 text-slate-300">{card.body}</p>
+                  <h3 className="font-display text-2xl text-white text-glow">
+                    {card.title}
+                  </h3>
+                  <p className="mt-4 max-w-xl text-base leading-8 text-slate-300">
+                    {card.body}
+                  </p>
                 </div>
               </div>
             </motion.article>
@@ -73,5 +80,5 @@ export function AboutSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

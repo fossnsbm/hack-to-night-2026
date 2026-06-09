@@ -1,56 +1,65 @@
-"use client";
+'use client'
 
-import { motion } from 'framer-motion';
-import { ArrowRight, PlayCircle } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import { stats } from '@/lib/site-content';
+import { motion } from 'framer-motion'
+import { ArrowRight, PlayCircle } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { stats } from '@/lib/site-content'
 
-const targetDate = new Date('2026-06-19T18:00:00+05:30').getTime();
+const targetDate = new Date('2026-06-19T18:00:00+05:30').getTime()
 
 function useCountdown() {
-  const [timeLeft, setTimeLeft] = useState(() => targetDate - Date.now());
+  const [timeLeft, setTimeLeft] = useState(() => targetDate - Date.now())
 
   useEffect(() => {
-    const update = () => setTimeLeft(targetDate - Date.now());
-    update();
-    const interval = window.setInterval(update, 1000);
-    return () => window.clearInterval(interval);
-  }, []);
+    const update = () => setTimeLeft(targetDate - Date.now())
+    update()
+    const interval = window.setInterval(update, 1000)
+    return () => window.clearInterval(interval)
+  }, [])
 
   return useMemo(() => {
-    const safeValue = Math.max(0, timeLeft);
-    const seconds = Math.floor((safeValue / 1000) % 60);
-    const minutes = Math.floor((safeValue / (1000 * 60)) % 60);
-    const hours = Math.floor((safeValue / (1000 * 60 * 60)) % 24);
-    const days = Math.floor(safeValue / (1000 * 60 * 60 * 24));
+    const safeValue = Math.max(0, timeLeft)
+    const seconds = Math.floor((safeValue / 1000) % 60)
+    const minutes = Math.floor((safeValue / (1000 * 60)) % 60)
+    const hours = Math.floor((safeValue / (1000 * 60 * 60)) % 24)
+    const days = Math.floor(safeValue / (1000 * 60 * 60 * 24))
     return [
       { label: 'Days', value: days.toString().padStart(2, '0') },
       { label: 'Hours', value: hours.toString().padStart(2, '0') },
       { label: 'Mins', value: minutes.toString().padStart(2, '0') },
-      { label: 'Secs', value: seconds.toString().padStart(2, '0') }
-    ];
-  }, [timeLeft]);
+      { label: 'Secs', value: seconds.toString().padStart(2, '0') },
+    ]
+  }, [timeLeft])
 }
 
-function LightOrb({ className, delay = 0 }: { className?: string; delay?: number }) {
+function LightOrb({
+  className,
+  delay = 0,
+}: {
+  className?: string
+  delay?: number
+}) {
   return (
     <motion.div
       className={`absolute rounded-full blur-3xl ${className ?? ''}`}
       animate={{ opacity: [0.35, 0.8, 0.45], scale: [1, 1.16, 1] }}
       transition={{ duration: 7, delay, repeat: Infinity, ease: 'easeInOut' }}
     />
-  );
+  )
 }
 
 export function Hero() {
-  const countdown = useCountdown();
+  const countdown = useCountdown()
 
   return (
     <section id="home" className="relative overflow-hidden pt-10 sm:pt-16">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,229,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.05)_1px,transparent_1px)] bg-[length:120px_120px] opacity-50 [mask-image:radial-gradient(circle_at_center,black_38%,transparent_100%)] motion-safe:animate-gridMove" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_15%,rgba(0,229,255,0.18),transparent_22%),radial-gradient(circle_at_15%_35%,rgba(0,170,255,0.16),transparent_18%),radial-gradient(circle_at_85%_30%,rgba(0,229,255,0.14),transparent_16%)]" />
       <LightOrb className="left-10 top-20 h-72 w-72 bg-neon/18" />
-      <LightOrb className="right-8 top-52 h-56 w-56 bg-electric/18" delay={1.2} />
+      <LightOrb
+        className="right-8 top-52 h-56 w-56 bg-electric/18"
+        delay={1.2}
+      />
 
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-16 px-4 pb-24 pt-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-20">
         <motion.div
@@ -72,8 +81,19 @@ export function Hero() {
           <h1 className="mt-8 font-display text-5xl font-medium uppercase tracking-[0.18em] text-white text-glow sm:text-6xl lg:text-7xl xl:text-8xl">
             <span className="block">Hack To Night</span>
             <motion.span
-              animate={{ opacity: [1, 0.82, 1], textShadow: ['0 0 12px rgba(0,229,255,0.55)', '0 0 24px rgba(0,229,255,0.95)', '0 0 12px rgba(0,229,255,0.55)'] }}
-              transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{
+                opacity: [1, 0.82, 1],
+                textShadow: [
+                  '0 0 12px rgba(0,229,255,0.55)',
+                  '0 0 24px rgba(0,229,255,0.95)',
+                  '0 0 12px rgba(0,229,255,0.55)',
+                ],
+              }}
+              transition={{
+                duration: 4.8,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
               className="block text-neon"
             >
               2026
@@ -95,7 +115,8 @@ export function Hero() {
             transition={{ delay: 0.34, duration: 0.7 }}
             className="mt-5 max-w-2xl text-lg leading-8 text-cyan-50/65"
           >
-            An overnight hackathon where innovators, developers, designers, and creators collaborate to build groundbreaking solutions.
+            An overnight hackathon where innovators, developers, designers, and
+            creators collaborate to build groundbreaking solutions.
           </motion.p>
 
           <motion.div
@@ -104,17 +125,11 @@ export function Hero() {
             transition={{ delay: 0.42, duration: 0.7 }}
             className="mt-10 flex flex-wrap gap-4"
           >
-            <a
-              href="#register"
-              className="neon-button"
-            >
+            <a href="#register" className="neon-button">
               Register Now
               <ArrowRight className="h-4 w-4" />
             </a>
-            <a
-              href="#about"
-              className="neon-button-secondary"
-            >
+            <a href="#about" className="neon-button-secondary">
               Learn More
               <PlayCircle className="h-4 w-4" />
             </a>
@@ -129,7 +144,9 @@ export function Hero() {
                 transition={{ delay: 0.18 + index * 0.08, duration: 0.6 }}
                 className="section-card-soft p-4"
               >
-                <div className="font-display text-3xl uppercase tracking-[0.18em] text-neon text-glow">{stat.value}</div>
+                <div className="font-display text-3xl uppercase tracking-[0.18em] text-neon text-glow">
+                  {stat.value}
+                </div>
                 <div className="mt-2 text-sm text-cyan-50/65">{stat.label}</div>
               </motion.div>
             ))}
@@ -150,12 +167,21 @@ export function Hero() {
             <div className="absolute inset-0 bg-[linear-gradient(transparent_0%,rgba(255,255,255,0.05)_50%,transparent_100%)] opacity-20 motion-safe:animate-scan" />
 
             <div className="relative z-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.36em] text-cyan-50/55">Countdown to ignition</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.36em] text-cyan-50/55">
+                Countdown to ignition
+              </p>
               <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 {countdown.map((item) => (
-                  <div key={item.label} className="section-card-soft px-4 py-6 text-center shadow-inner shadow-neon/10">
-                    <div className="font-display text-4xl text-white text-glow sm:text-5xl">{item.value}</div>
-                    <div className="mt-2 text-xs uppercase tracking-[0.34em] text-cyan-100/50">{item.label}</div>
+                  <div
+                    key={item.label}
+                    className="section-card-soft px-4 py-6 text-center shadow-inner shadow-neon/10"
+                  >
+                    <div className="font-display text-4xl text-white text-glow sm:text-5xl">
+                      {item.value}
+                    </div>
+                    <div className="mt-2 text-xs uppercase tracking-[0.34em] text-cyan-100/50">
+                      {item.label}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -170,7 +196,11 @@ export function Hero() {
                     className="h-full rounded-full bg-gradient-to-r from-neon via-electric to-cyan-100 shadow-[0_0_18px_rgba(0,229,255,0.65)]"
                     initial={{ width: '28%' }}
                     animate={{ width: ['28%', '72%', '44%', '86%', '28%'] }}
-                    transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+                    transition={{
+                      duration: 9,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
                   />
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-3 text-center text-xs uppercase tracking-[0.28em] text-cyan-50/55">
@@ -184,5 +214,5 @@ export function Hero() {
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

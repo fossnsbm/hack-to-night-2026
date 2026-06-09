@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, Sparkles, X } from 'lucide-react';
-import { useState } from 'react';
-import { navItems } from '@/lib/site-content';
+import { AnimatePresence, motion } from 'framer-motion'
+import { Menu, Sparkles, X } from 'lucide-react'
+import { useState } from 'react'
+import { navItems } from '@/lib/site-content'
 
 export function Navbar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <motion.header
@@ -21,8 +21,12 @@ export function Navbar() {
             <Sparkles className="h-5 w-5 text-neon" />
           </span>
           <span className="flex flex-col leading-none">
-            <span className="font-display text-lg tracking-[0.32em] text-white text-glow">HACK TO NIGHT</span>
-            <span className="text-[0.68rem] uppercase tracking-[0.34em] text-cyan-100/55">NSBM FOSS Community</span>
+            <span className="font-display text-lg tracking-[0.32em] text-white text-glow">
+              HACK TO NIGHT
+            </span>
+            <span className="text-[0.68rem] uppercase tracking-[0.34em] text-cyan-100/55">
+              NSBM FOSS Community
+            </span>
           </span>
         </a>
 
@@ -82,5 +86,5 @@ export function Navbar() {
         ) : null}
       </AnimatePresence>
     </motion.header>
-  );
+  )
 }
