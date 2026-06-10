@@ -1,5 +1,5 @@
 pre-commit:
   commands:
     format:
-      run: bun format
+      run: bunx biome format --write {staged_files}
       stage_fixed: true
