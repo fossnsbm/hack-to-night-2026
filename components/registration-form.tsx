@@ -1,12 +1,12 @@
 'use client'
 
+import { useAuthActions } from '@convex-dev/auth/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CheckCircle2, LoaderCircle, Send, ShieldCheck } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import * as z from 'zod'
-import { registrationFields } from '@/lib/site-content'
 import { SectionHeading } from '@/components/section-heading'
-import { useAuthActions } from '@convex-dev/auth/react'
+import { registrationFields } from '@/lib/site-content'
 
 export function RegistrationForm() {
   const getMemberLabel = (index: number): string => {
@@ -405,29 +405,11 @@ export function RegistrationForm() {
                         Ready for the portal
                       </h3>
                       <p className="mt-4 text-sm leading-7 text-slate-300">
-                        The form supports instant validation and a success state
-                        tailored for a premium cyberpunk event.
+                        Get ready to dive into the ultimate event. <br />
+                        Get ready to Compete
                       </p>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="glass-panel rounded-2xl p-4">
-                        <div className="text-sm uppercase tracking-[0.35em] text-neon">
-                          Neon Fields
-                        </div>
-                        <div className="mt-2 text-sm text-slate-300">
-                          Clean focus states and high-contrast readability.
-                        </div>
-                      </div>
-                      <div className="glass-panel rounded-2xl p-4">
-                        <div className="text-sm uppercase tracking-[0.35em] text-electric">
-                          Instant Feedback
-                        </div>
-                        <div className="mt-2 text-sm text-slate-300">
-                          Validation that helps teams submit quickly and
-                          correctly.
-                        </div>
-                      </div>
-                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2"></div>
                   </motion.div>
                 )}
               </AnimatePresence>
