@@ -1,9 +1,13 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { ScrollTrigger, SplitText } from 'gsap/all'
 import { ArrowRight, PlayCircle } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { stats } from '@/lib/site-content'
+
+gsap.registerPlugin(SplitText, ScrollTrigger)
 
 const targetDate = new Date('2026-06-19T18:00:00+05:30').getTime()
 
@@ -32,27 +36,82 @@ function useCountdown() {
   }, [timeLeft])
 }
 
-function LightOrb({
-  className,
-  delay = 0,
-}: {
-  className?: string
-  delay?: number
-}) {
-  return (
-    <motion.div
-      className={`absolute rounded-full blur-3xl ${className ?? ''}`}
-      animate={{ opacity: [0.35, 0.8, 0.45], scale: [1, 1.16, 1] }}
-      transition={{ duration: 7, delay, repeat: Infinity, ease: 'easeInOut' }}
-    />
-  )
+function LightOrb({ className }: { className?: string; delay?: number }) {
+  return <div className={`absolute rounded-full blur-3xl ${className ?? ''}`} />
 }
 
 export function Hero() {
+  const sectionRef = useRef<HTMLPreElement | null>(null)
+  const titleText = useRef<HTMLElement | null>(null)
+  const sloganText = useRef<HTMLParagraphElement | null>(null)
   const countdown = useCountdown()
 
+  useGSAP(() => {
+    if (sectionRef.current) {
+      const elements: HTMLElement[] = gsap.utils.toArray(
+        sectionRef.current.children,
+      )
+
+      elements.forEach((el) => {
+        gsap.fromTo(
+          el,
+          {
+            y: 20,
+            opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+          },
+        )
+      })
+    }
+
+    SplitText.create(sloganText.current, {
+      type: 'words',
+      mask: 'lines',
+      autoSplit: true,
+      onSplit(self) {
+        return gsap.from(self.words, {
+          duration: 1,
+          y: 100,
+          ease: 'power4',
+          autoAlpha: 0,
+          stagger: 0.05,
+          delay: 0.08,
+        })
+      },
+    })
+
+    SplitText.create(titleText.current, {
+      type: 'chars',
+      mask: 'lines',
+      autoSplit: true,
+      onSplit(self) {
+        return gsap.from(self.chars, {
+          duration: 1,
+          x: -100,
+          rotation: 'random(-80, 80)',
+          ease: 'power4',
+          autoAlpha: 0,
+          stagger: 0.05,
+        })
+      },
+    })
+
+    gsap.to('#progress-bar', {
+      width: '100%',
+      duration: 1.5,
+    })
+  })
+
   return (
-    <section id="home" className="relative overflow-hidden pt-10 sm:pt-16">
+    <section
+      ref={sectionRef}
+      id="home"
+      className="relative overflow-hidden pt-10 sm:pt-16"
+    >
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,229,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,229,255,0.05)_1px,transparent_1px)] bg-[length:120px_120px] opacity-50 [mask-image:radial-gradient(circle_at_center,black_38%,transparent_100%)] motion-safe:animate-gridMove" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_15%,rgba(0,229,255,0.18),transparent_22%),radial-gradient(circle_at_15%_35%,rgba(0,170,255,0.16),transparent_18%),radial-gradient(circle_at_85%_30%,rgba(0,229,255,0.14),transparent_16%)]" />
       <LightOrb className="left-10 top-20 h-72 w-72 bg-neon/18" />
@@ -62,69 +121,30 @@ export function Hero() {
       />
 
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-16 px-4 pb-24 pt-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="max-w-3xl"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12, duration: 0.7 }}
-            className="neon-chip inline-flex items-center gap-2"
-          >
-            <span className="h-2 w-2 rounded-full bg-neon shadow-[0_0_14px_rgba(0,229,255,0.9)]" />
+        <div className="max-w-3xl">
+          <div className="neon-chip inline-flex items-center gap-2">
             NSBM FOSS Community Presents
-          </motion.div>
+          </div>
 
           <h1 className="mt-8 font-display text-5xl font-medium uppercase tracking-[0.18em] text-white text-glow sm:text-6xl lg:text-7xl xl:text-8xl">
-            <span className="block">Hack To Night</span>
-            <motion.span
-              animate={{
-                opacity: [1, 0.82, 1],
-                textShadow: [
-                  '0 0 12px rgba(0,229,255,0.55)',
-                  '0 0 24px rgba(0,229,255,0.95)',
-                  '0 0 12px rgba(0,229,255,0.55)',
-                ],
-              }}
-              transition={{
-                duration: 4.8,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-              className="block text-neon"
-            >
-              2026
-            </motion.span>
+            <span ref={titleText} className="block">
+              Hack To Night
+            </span>
           </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.24, duration: 0.7 }}
+          <p
+            ref={sloganText}
             className="mt-6 max-w-2xl text-xl leading-8 text-cyan-50/80 sm:text-2xl"
           >
             Enter The Grid. Build The Future.
-          </motion.p>
+          </p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.34, duration: 0.7 }}
-            className="mt-5 max-w-2xl text-lg leading-8 text-cyan-50/65"
-          >
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-cyan-50/65">
             An overnight hackathon where innovators, developers, designers, and
             creators collaborate to build groundbreaking solutions.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.42, duration: 0.7 }}
-            className="mt-10 flex flex-wrap gap-4"
-          >
+          <div className="mt-10 flex flex-wrap gap-4">
             <a href="#register" className="neon-button">
               Register Now
               <ArrowRight className="h-4 w-4" />
@@ -133,32 +153,21 @@ export function Hero() {
               Learn More
               <PlayCircle className="h-4 w-4" />
             </a>
-          </motion.div>
+          </div>
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.18 + index * 0.08, duration: 0.6 }}
-                className="section-card-soft p-4"
-              >
+            {stats.map((stat, _index) => (
+              <div key={stat.label} className="section-card-soft p-4">
                 <div className="font-display text-3xl uppercase tracking-[0.18em] text-neon text-glow">
                   {stat.value}
                 </div>
                 <div className="mt-2 text-sm text-cyan-50/65">{stat.label}</div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 26, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.22, duration: 0.8, ease: 'easeOut' }}
-          className="relative"
-        >
+        <div className="relative">
           <div className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,rgba(0,229,255,0.18),transparent_55%)] blur-2xl" />
           <div className="section-card relative overflow-hidden">
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neon to-transparent opacity-70" />
@@ -192,15 +201,9 @@ export function Hero() {
                   <span className="text-neon">Operational</span>
                 </div>
                 <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/5">
-                  <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-neon via-electric to-cyan-100 shadow-[0_0_18px_rgba(0,229,255,0.65)]"
-                    initial={{ width: '28%' }}
-                    animate={{ width: ['28%', '72%', '44%', '86%', '28%'] }}
-                    transition={{
-                      duration: 9,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                    }}
+                  <div
+                    id="progress-bar"
+                    className="h-full w-0 rounded-full bg-gradient-to-r from-neon via-electric to-cyan-100 shadow-[0_0_18px_rgba(0,229,255,0.65)]"
                   />
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-3 text-center text-xs uppercase tracking-[0.28em] text-cyan-50/55">
@@ -211,7 +214,7 @@ export function Hero() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )
