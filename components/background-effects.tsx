@@ -2,8 +2,11 @@
 
 import { motion, useScroll, useSpring } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
 
 export function BackgroundEffects() {
+  const isTabletOrMobile = useMediaQuery({ maxWidth: 1224 })
+
   const { scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, {
     stiffness: 120,
@@ -21,7 +24,7 @@ export function BackgroundEffects() {
     return () => window.removeEventListener('pointermove', handleMove)
   }, [])
 
-  return (
+  return !isTabletOrMobile ? (
     <>
       <motion.div
         className="fixed left-0 top-0 z-[60] h-1 w-full origin-left bg-gradient-to-r from-neon via-electric to-transparent"
@@ -50,5 +53,5 @@ export function BackgroundEffects() {
         className="pointer-events-none fixed inset-0 z-[1] opacity-20 mix-blend-screen [background-image:linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] [background-size:36px_36px]"
       />
     </>
-  )
+  ) : null
 }

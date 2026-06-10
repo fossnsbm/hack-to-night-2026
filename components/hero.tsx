@@ -6,6 +6,9 @@ import { ScrollTrigger, SplitText } from 'gsap/all'
 import { ArrowRight, PlayCircle } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { stats } from '@/lib/site-content'
+import { useMediaQuery } from 'react-responsive'
+
+gsap.registerPlugin(SplitText, ScrollTrigger)
 
 gsap.registerPlugin(SplitText, ScrollTrigger)
 
@@ -45,6 +48,69 @@ export function Hero() {
   const titleText = useRef<HTMLElement | null>(null)
   const sloganText = useRef<HTMLParagraphElement | null>(null)
   const countdown = useCountdown()
+  const isTabletOrMobile = useMediaQuery({ maxWidth: 1224 })
+
+  useGSAP(() => {
+    if (sectionRef.current) {
+      const elements: HTMLElement[] = gsap.utils.toArray(
+        sectionRef.current.children,
+      )
+
+      elements.forEach((el) => {
+        gsap.fromTo(
+          el,
+          {
+            y: 20,
+            opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+          },
+        )
+      })
+    }
+
+    !isTabletOrMobile &&
+      SplitText.create(sloganText.current, {
+        type: 'words',
+        mask: 'lines',
+        autoSplit: true,
+        onSplit(self) {
+          return gsap.from(self.words, {
+            duration: 1,
+            y: 100,
+            ease: 'power4',
+            autoAlpha: 0,
+            stagger: 0.05,
+            delay: 0.08,
+          })
+        },
+      })
+
+    !isTabletOrMobile &&
+      SplitText.create(titleText.current, {
+        type: 'chars',
+        mask: 'lines',
+        autoSplit: true,
+        onSplit(self) {
+          return gsap.from(self.chars, {
+            duration: 1,
+            x: -100,
+            rotation: 'random(-80, 80)',
+            ease: 'power4',
+            autoAlpha: 0,
+            stagger: 0.05,
+          })
+        },
+      })
+
+    gsap.to('#progress-bar', {
+      width: '100%',
+      duration: 1.5,
+    })
+  })
 
   useGSAP(() => {
     if (sectionRef.current) {
