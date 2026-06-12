@@ -12,6 +12,7 @@ import type * as CustomProfile from "../CustomProfile.js";
 import type * as auth from "../auth.js";
 import type * as googleSheets from "../googleSheets.js";
 import type * as http from "../http.js";
+import type * as sendEmails from "../sendEmails.js";
 
 import type {
   ApiFromModules,
@@ -24,6 +25,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   googleSheets: typeof googleSheets;
   http: typeof http;
+  sendEmails: typeof sendEmails;
 }>;
 
 /**
@@ -52,4 +54,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  resend: import("@convex-dev/resend/_generated/component.js").ComponentApi<"resend">;
+};

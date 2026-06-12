@@ -13,6 +13,7 @@
   "dependencies": {
     "@auth/core": "^0.37.0",
     "@convex-dev/auth": "^0.0.93",
+    "@convex-dev/resend": "^0.2.4",
     "@gsap/react": "^2.1.2",
     "convex": "^1.40.0",
     "framer-motion": "^12.23.12",
