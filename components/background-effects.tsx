@@ -11,7 +11,7 @@ export function BackgroundEffects() {
   const progress = useSpring(scrollYProgress, {
     stiffness: 120,
     damping: 28,
-    mass: 0.2,
+    mass: 0.2
   })
   const [cursor, setCursor] = useState({ x: -200, y: -200 })
 

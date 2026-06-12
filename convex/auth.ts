@@ -23,7 +23,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       const userId = await ctx.db.insert('users', {
         email: profile.email,
         role: 'user',
-        phone: profile.phone!,
+        phone: profile.phone!
       })
 
       if (profile.teamName && profile.teamLeaderName && profile.teamMembers) {
@@ -31,7 +31,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           userId,
           teamName: profile.teamName,
           teamLeaderName: profile.teamLeaderName,
-          teamMembers: profile.teamMembers,
+          teamMembers: profile.teamMembers
         })
 
         console.log('running google sheets log')
@@ -40,11 +40,11 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           teamMembers: profile.teamMembers,
           teamName: profile.teamName,
           teamLeaderEmail: profile.email,
-          teamLeaderPhone: profile.phone!,
+          teamLeaderPhone: profile.phone!
         })
       }
 
       return userId
-    },
-  },
+    }
+  }
 })

@@ -34,7 +34,7 @@ function useCountdown() {
       { label: 'Days', value: days.toString().padStart(2, '0') },
       { label: 'Hours', value: hours.toString().padStart(2, '0') },
       { label: 'Mins', value: minutes.toString().padStart(2, '0') },
-      { label: 'Secs', value: seconds.toString().padStart(2, '0') },
+      { label: 'Secs', value: seconds.toString().padStart(2, '0') }
     ]
   }, [timeLeft])
 }
@@ -53,7 +53,7 @@ export function Hero() {
   useGSAP(() => {
     if (sectionRef.current) {
       const elements: HTMLElement[] = gsap.utils.toArray(
-        sectionRef.current.children,
+        sectionRef.current.children
       )
 
       elements.forEach((el) => {
@@ -61,13 +61,13 @@ export function Hero() {
           el,
           {
             y: 20,
-            opacity: 0,
+            opacity: 0
           },
           {
             y: 0,
             opacity: 1,
-            duration: 1,
-          },
+            duration: 1
+          }
         )
       })
     }
@@ -84,9 +84,9 @@ export function Hero() {
             ease: 'power4',
             autoAlpha: 0,
             stagger: 0.05,
-            delay: 0.08,
+            delay: 0.08
           })
-        },
+        }
       })
 
     !isTabletOrMobile &&
@@ -101,21 +101,21 @@ export function Hero() {
             rotation: 'random(-80, 80)',
             ease: 'power4',
             autoAlpha: 0,
-            stagger: 0.05,
+            stagger: 0.05
           })
-        },
+        }
       })
 
     gsap.to('#progress-bar', {
       width: '100%',
-      duration: 1.5,
+      duration: 1.5
     })
   })
 
   useGSAP(() => {
     if (sectionRef.current) {
       const elements: HTMLElement[] = gsap.utils.toArray(
-        sectionRef.current.children,
+        sectionRef.current.children
       )
 
       elements.forEach((el) => {
@@ -123,13 +123,13 @@ export function Hero() {
           el,
           {
             y: 20,
-            opacity: 0,
+            opacity: 0
           },
           {
             y: 0,
             opacity: 1,
-            duration: 1,
-          },
+            duration: 1
+          }
         )
       })
     }
@@ -145,9 +145,9 @@ export function Hero() {
           ease: 'power4',
           autoAlpha: 0,
           stagger: 0.05,
-          delay: 0.08,
+          delay: 0.08
         })
-      },
+      }
     })
 
     SplitText.create(titleText.current, {
@@ -161,14 +161,14 @@ export function Hero() {
           rotation: 'random(-80, 80)',
           ease: 'power4',
           autoAlpha: 0,
-          stagger: 0.05,
+          stagger: 0.05
         })
-      },
+      }
     })
 
     gsap.to('#progress-bar', {
       width: '100%',
-      duration: 1.5,
+      duration: 1.5
     })
   })
 

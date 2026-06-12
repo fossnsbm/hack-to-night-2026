@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 export function SectionHeading({
   eyebrow,
   title,
-  description,
+  description
 }: {
   eyebrow: string
   title: string

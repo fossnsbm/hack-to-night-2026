@@ -9,13 +9,13 @@ const storyCards = [
   {
     icon: BookOpen,
     title: 'Who We Are',
-    body: 'NSBM FOSS Community is a student-driven open-source community focused on innovation, collaboration, and technology empowerment.',
+    body: 'NSBM FOSS Community is a student-driven open-source community focused on innovation, collaboration, and technology empowerment.'
   },
   {
     icon: Sparkles,
     title: 'Our Mission',
-    body: 'To inspire students to create impactful solutions through open-source technologies and collaborative learning.',
-  },
+    body: 'To inspire students to create impactful solutions through open-source technologies and collaborative learning.'
+  }
 ]
 
 export function AboutSection() {
