@@ -1,7 +1,7 @@
-import CustomPassword from './CustomProfile'
 import { convexAuth } from '@convex-dev/auth/server'
 import { internal } from './_generated/api'
 import { MutationCtx } from './_generated/server'
+import CustomPassword from './CustomProfile'
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [CustomPassword],
@@ -41,6 +41,12 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           teamName: profile.teamName,
           teamLeaderEmail: profile.email,
           teamLeaderPhone: profile.phone!
+        })
+
+        console.log('sending onboaring email')
+        await ctx.scheduler.runAfter(0, internal.sendEmails.sendConfirmation, {
+          teamEmail: profile.email,
+          teamName: profile.teamName
         })
       }
 
