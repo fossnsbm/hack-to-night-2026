@@ -48,6 +48,12 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           teamEmail: profile.email,
           teamName: profile.teamName
         })
+
+        console.log('Adding to contacts')
+        await ctx.scheduler.runAfter(5, internal.addEmailContacts.addContact, {
+          name: profile.teamName,
+          email: profile.email
+        })
       }
 
       return userId

@@ -9,6 +9,7 @@
  */
 
 import type * as CustomProfile from "../CustomProfile.js";
+import type * as addEmailContacts from "../addEmailContacts.js";
 import type * as auth from "../auth.js";
 import type * as googleSheets from "../googleSheets.js";
 import type * as http from "../http.js";
@@ -22,6 +23,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   CustomProfile: typeof CustomProfile;
+  addEmailContacts: typeof addEmailContacts;
   auth: typeof auth;
   googleSheets: typeof googleSheets;
   http: typeof http;
