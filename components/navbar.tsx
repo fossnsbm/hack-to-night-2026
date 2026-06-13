@@ -14,14 +14,14 @@ export function Navbar() {
   const mobileMenuRef = useRef<HTMLDivElement>(null)
   const menuTween = {
     duration: 0.25,
-    ease: 'power2.out',
+    ease: 'power2.out'
   }
 
   useGSAP(() => {
     gsap.from(headerRef.current, {
       opacity: 0,
       y: -24,
-      duration: 0.6,
+      duration: 0.6
     })
 
     gsap.to(logoRef.current, {
@@ -29,7 +29,7 @@ export function Navbar() {
       yoyo: true,
       repeat: 1,
       duration: 0.8,
-      repeatDelay: 0.4,
+      repeatDelay: 0.4
     })
   }, [])
 
@@ -42,10 +42,10 @@ export function Navbar() {
       gsap.fromTo(
         mobileMenuRef.current,
         { height: 0, opacity: 0 },
-        { height: 'auto', opacity: 1, ...menuTween },
+        { height: 'auto', opacity: 1, ...menuTween }
       )
     },
-    { dependencies: [open] },
+    { dependencies: [open] }
   )
 
   const openMenu = () => {
@@ -69,7 +69,7 @@ export function Navbar() {
       onComplete: () => {
         setOpen(false)
         setMounted(false)
-      },
+      }
     })
   }
 

@@ -26,7 +26,7 @@ export function RegistrationForm() {
 
   const teamMemberSchema = z.object({
     name: z.string().min(1, 'Name is required'),
-    studentId: z.string().regex(/[0-9]{5}/, 'Invalid Student Id'),
+    studentId: z.string().regex(/[0-9]{5}/, 'Invalid Student Id')
   })
 
   const registrationSchema = z
@@ -43,18 +43,18 @@ export function RegistrationForm() {
       teamMembers: z
         .array(teamMemberSchema)
         .min(2, 'At least 2 members required')
-        .max(5, 'Maximum 5 members allowed'),
+        .max(5, 'Maximum 5 members allowed')
     })
     .refine((data) => data.password === data.confpassword, {
       message: "Passwords don't match",
-      path: ['confpassword'],
+      path: ['confpassword']
     })
 
   useEffect(() => {
     if (errors.length > 0 && registrationSection.current) {
       registrationSection.current.scrollIntoView({
         behavior: 'smooth',
-        block: 'start',
+        block: 'start'
       })
     }
   }, [errors])
@@ -100,7 +100,7 @@ export function RegistrationForm() {
       if (name && studentId) {
         teamMembers.push({
           name: name.toString(),
-          studentId: studentId.toString(),
+          studentId: studentId.toString()
         })
       }
     }
@@ -111,14 +111,14 @@ export function RegistrationForm() {
       phone: formData.get('phone')?.toString() || '',
       password: formData.get('password')?.toString() || '',
       confpassword: formData.get('confpassword')?.toString() || '',
-      teamMembers,
+      teamMembers
     }
 
     const registration = registrationSchema.safeParse(data)
 
     if (!registration.success) {
       const errorMessages = registration.error.issues.map(
-        (err) => `${err.path.join('.')}: ${err.message}`,
+        (err) => `${err.path.join('.')}: ${err.message}`
       )
       setErrors(errorMessages)
       setLoading(false)
@@ -330,7 +330,7 @@ export function RegistrationForm() {
                                   </div>
                                 </div>
                               </div>
-                            ),
+                            )
                           )}
                         </div>
                       )}
@@ -375,7 +375,7 @@ export function RegistrationForm() {
                       transition={{
                         duration: 1.4,
                         repeat: Infinity,
-                        ease: 'easeInOut',
+                        ease: 'easeInOut'
                       }}
                       className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-neon/40 bg-neon/10 text-neon shadow-strong"
                     >

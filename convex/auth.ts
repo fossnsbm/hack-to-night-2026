@@ -1,7 +1,7 @@
-import CustomPassword from './CustomProfile'
 import { convexAuth } from '@convex-dev/auth/server'
 import { internal } from './_generated/api'
 import { MutationCtx } from './_generated/server'
+import CustomPassword from './CustomProfile'
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [CustomPassword],
@@ -23,7 +23,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       const userId = await ctx.db.insert('users', {
         email: profile.email,
         role: 'user',
-        phone: profile.phone!,
+        phone: profile.phone!
       })
 
       if (profile.teamName && profile.teamLeaderName && profile.teamMembers) {
@@ -31,7 +31,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           userId,
           teamName: profile.teamName,
           teamLeaderName: profile.teamLeaderName,
-          teamMembers: profile.teamMembers,
+          teamMembers: profile.teamMembers
         })
 
         console.log('running google sheets log')
@@ -40,11 +40,23 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           teamMembers: profile.teamMembers,
           teamName: profile.teamName,
           teamLeaderEmail: profile.email,
-          teamLeaderPhone: profile.phone!,
+          teamLeaderPhone: profile.phone!
+        })
+
+        console.log('sending onboaring email')
+        await ctx.scheduler.runAfter(0, internal.sendEmails.sendConfirmation, {
+          teamEmail: profile.email,
+          teamName: profile.teamName
+        })
+
+        console.log('Adding to contacts')
+        await ctx.scheduler.runAfter(5, internal.addEmailContacts.addContact, {
+          name: profile.teamName,
+          email: profile.email
         })
       }
 
       return userId
-    },
-  },
+    }
+  }
 })

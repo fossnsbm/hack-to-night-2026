@@ -6,14 +6,14 @@ import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server'
 const orbitron = Orbitron({
   subsets: ['latin'],
   variable: '--font-display',
-  display: 'swap',
+  display: 'swap'
 })
 
 const rajdhani = Rajdhani({
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700']
 })
 
 export const metadata: Metadata = {
@@ -25,12 +25,12 @@ export const metadata: Metadata = {
     title: 'Hack To Night 2026',
     description:
       'Enter the grid and build the future with NSBM FOSS Community.',
-    type: 'website',
-  },
+    type: 'website'
+  }
 }
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ConvexAuthNextjsServerProvider>

@@ -16,14 +16,14 @@ export const addUserToSheet = internalAction({
     teamMembers: v.array(
       v.object({
         name: v.string(),
-        studentId: v.string(),
-      }),
-    ),
+        studentId: v.string()
+      })
+    )
   },
   handler: async (ctx, args) => {
     const auth = new google.auth.GoogleAuth({
       credentials,
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+      scopes: ['https://www.googleapis.com/auth/spreadsheets']
     })
 
     const sheets = google.sheets({ version: 'v4', auth })
@@ -34,8 +34,8 @@ export const addUserToSheet = internalAction({
         args.teamLeaderName,
         args.teamLeaderEmail,
         args.teamLeaderPhone,
-        JSON.stringify(args.teamMembers),
-      ],
+        JSON.stringify(args.teamMembers)
+      ]
     ]
 
     try {
@@ -44,11 +44,11 @@ export const addUserToSheet = internalAction({
         range: 'Sheet1',
         valueInputOption: 'RAW',
         insertDataOption: 'INSERT_ROWS',
-        requestBody: { values },
+        requestBody: { values }
       })
       console.log('cells updated: ', result.data.updates?.updatedCells)
     } catch (err) {
       console.error('The API returned an error: ' + err)
     }
-  },
+  }
 })

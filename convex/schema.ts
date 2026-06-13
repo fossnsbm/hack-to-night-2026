@@ -1,5 +1,5 @@
-import { defineSchema, defineTable } from 'convex/server'
 import { authTables } from '@convex-dev/auth/server'
+import { defineSchema, defineTable } from 'convex/server'
 import { v } from 'convex/values'
 
 const schema = defineSchema({
@@ -11,7 +11,7 @@ const schema = defineSchema({
     role: v.optional(v.union(v.literal('admin'), v.literal('user'))),
     phone: v.string(),
     phoneVerificationTime: v.optional(v.number()),
-    isAnonymous: v.optional(v.boolean()),
+    isAnonymous: v.optional(v.boolean())
   }).index('email', ['email']),
 
   teams: defineTable({
@@ -21,10 +21,10 @@ const schema = defineSchema({
     teamMembers: v.array(
       v.object({
         name: v.string(),
-        studentId: v.string(),
-      }),
-    ),
-  }).index('by_userId', ['userId']),
+        studentId: v.string()
+      })
+    )
+  }).index('by_userId', ['userId'])
 })
 
 export default schema

@@ -12,7 +12,7 @@ export default Password<DataModel>({
       teamLeaderName: params.teamLeaderName as string | undefined,
       teamMembers: params.teamMembers
         ? JSON.parse(params.teamMembers as string)
-        : undefined,
+        : undefined
     }
-  },
+  }
 })
