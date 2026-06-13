@@ -11,12 +11,12 @@
     "format": "biome format --no-errors-on-unmatched --write"
   },
   "dependencies": {
-    "@auth/core": "^0.37.0",
+    "@auth/core": "^0.37.4",
     "@convex-dev/auth": "^0.0.93",
     "@convex-dev/resend": "^0.2.4",
     "@gsap/react": "^2.1.2",
-    "convex": "^1.40.0",
-    "framer-motion": "^12.23.12",
+    "convex": "^1.41.0",
+    "framer-motion": "^12.40.0",
     "googleapis": "^173.0.0",
     "gsap": "^3.15.0",
     "lucide-react": "^0.541.0",
@@ -28,14 +28,14 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.16",
-    "@types/node": "^22.15.30",
+    "@types/node": "^22.19.21",
     "@types/react": "19.2.15",
     "@types/react-dom": "19.2.3",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.5.0",
     "lefthook": "^2.1.9",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.9.2"
+    "postcss": "^8.5.15",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3"
   },
   "overrides": {
     "@types/react": "19.2.15",
