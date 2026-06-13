@@ -3,7 +3,7 @@ import { v } from 'convex/values'
 import { components } from './_generated/api'
 import { env, internalMutation } from './_generated/server'
 
-const resend: Resend = new Resend(components.resend, { testMode: false })
+export const resend: Resend = new Resend(components.resend, { testMode: false })
 
 export const sendConfirmation = internalMutation({
   args: {
