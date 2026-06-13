@@ -29,6 +29,7 @@ type Env = {
   readonly GOOGLE_SPREADSHEET_ID: string;
   readonly RESEND_API_KEY: string | undefined;
   readonly RESEND_ONBOARDING_TEMPLATE: string | undefined;
+  readonly RESEND_WEBHOOK_SECRET: string | undefined;
 };
 
 /**
