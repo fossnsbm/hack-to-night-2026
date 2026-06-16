@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuthActions } from '@convex-dev/auth/react'
+import { ConvexError } from 'convex/values'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CheckCircle2, LoaderCircle, Send, ShieldCheck } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -16,7 +17,9 @@ export function RegistrationForm() {
 
   const registrationSection = useRef<HTMLDivElement | null>(null)
   const formRef = useRef<HTMLFormElement | null>(null)
-
+  const isRegistrationClosed = JSON.parse(
+    process.env.NEXT_PUBLIC_REGISTRAION_CLOSED!
+  )
   const [memberCount, setMemberCount] = useState(2)
   const [currentMemberIndex, setCurrentMemberIndex] = useState(0)
   const [errors, setErrors] = useState<string[]>([])
@@ -156,6 +159,12 @@ export function RegistrationForm() {
 
       window.setTimeout(() => setSuccess(false), 3200)
     } catch (error) {
+      if (error instanceof ConvexError) {
+        setErrors([error.data.message])
+        setLoading(false)
+        return
+      }
+
       console.log('Registration error:', error)
       setErrors(['Registration failed. Please try again.'])
       setLoading(false)
@@ -171,7 +180,9 @@ export function RegistrationForm() {
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Registration"
-          title="Join the grid"
+          title={
+            isRegistrationClosed ? 'Grid has been closed' : 'Join the grid'
+          }
           description="A futuristic registration experience with responsive validation, neon inputs, and a celebratory success state."
         />
 
@@ -211,139 +222,143 @@ export function RegistrationForm() {
                 </span>
               </div>
 
-              <div className="grid gap-5 sm:grid-cols-2">
-                {registrationFields.map((field, index) => (
-                  <motion.label
-                    key={field.name}
+              <fieldset disabled={isRegistrationClosed}>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {registrationFields.map((field, index) => (
+                    <motion.label
+                      key={field.name}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{ duration: 0.5, delay: index * 0.05 }}
+                    >
+                      <span className="mb-2 block text-sm font-medium text-slate-200">
+                        {field.label}
+                      </span>
+                      <input
+                        type={field.type}
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        className="neon-input"
+                      />
+                    </motion.label>
+                  ))}
+                  <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    transition={{ duration: 0.5, delay: 5 * 0.05 }}
+                    className="sm:col-span-2"
                   >
                     <span className="mb-2 block text-sm font-medium text-slate-200">
-                      {field.label}
+                      Team Members
                     </span>
-                    <input
-                      type={field.type}
-                      name={field.name}
-                      placeholder={field.placeholder}
-                      className="neon-input"
-                    />
-                  </motion.label>
-                ))}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.5, delay: 5 * 0.05 }}
-                  className="sm:col-span-2"
-                >
-                  <span className="mb-2 block text-sm font-medium text-slate-200">
-                    Team Members
-                  </span>
-                  <div className="glass-panel rounded-[1.6rem] p-6">
-                    <div className="flex justify-between items-center">
-                      <p className="text-sm mb-2">
-                        Minimum of 2, maximum of 5 members allowed
-                      </p>
-                      <button
-                        type="button"
-                        className="rounded px-4 py-2 text-xs font-semibold neon-button disabled:cursor-not-allowed disabled:opacity-70"
-                        onClick={addMember}
-                        disabled={memberCount >= 5}
-                      >
-                        ADD MEMBER
-                      </button>
-                    </div>
-                    <div className="p-4 mt-4">
-                      {memberCount > 0 && (
-                        <div className="rounded  p-5">
-                          <div className="mb-5 flex items-center justify-center gap-5">
-                            <button
-                              type="button"
-                              className="flex h-12 w-12 items-center justify-center rounded-lg neon-border text-4xl leading-none transition-all disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                              onClick={goToPrevMember}
-                              disabled={currentMemberIndex === 0}
-                            >
-                              ‹
-                            </button>
-                            <span className="min-w-12 text-center text-sm">
-                              {currentMemberIndex + 1} / {memberCount}
-                            </span>
-                            <button
-                              type="button"
-                              className="flex h-12 w-12 items-center justify-center rounded-lg neon-border text-4xl leading-none transition-all disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                              onClick={goToNextMember}
-                              disabled={currentMemberIndex === memberCount - 1}
-                            >
-                              ›
-                            </button>
-
-                            {currentMemberIndex >= 2 && (
+                    <div className="glass-panel rounded-[1.6rem] p-6">
+                      <div className="flex justify-between items-center">
+                        <p className="text-sm mb-2">
+                          Minimum of 2, maximum of 5 members allowed
+                        </p>
+                        <button
+                          type="button"
+                          className="rounded px-4 py-2 text-xs font-semibold neon-button disabled:cursor-not-allowed disabled:opacity-70"
+                          onClick={addMember}
+                          disabled={memberCount >= 5}
+                        >
+                          ADD MEMBER
+                        </button>
+                      </div>
+                      <div className="p-4 mt-4">
+                        {memberCount > 0 && (
+                          <div className="rounded  p-5">
+                            <div className="mb-5 flex items-center justify-center gap-5">
                               <button
                                 type="button"
-                                className="ml-2 flex h-12 w-12 items-center justify-center rounded-lg border border-red-400/30 text-3xl leading-none text-red-400 transition-all hover:border-red-400 hover:bg-red-400/10 hover:text-red-300"
-                                onClick={removeMember}
-                                aria-label="Remove member"
+                                className="flex h-12 w-12 items-center justify-center rounded-lg neon-border text-4xl leading-none transition-all disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                                onClick={goToPrevMember}
+                                disabled={currentMemberIndex === 0}
                               >
-                                ✕
+                                ‹
                               </button>
+                              <span className="min-w-12 text-center text-sm">
+                                {currentMemberIndex + 1} / {memberCount}
+                              </span>
+                              <button
+                                type="button"
+                                className="flex h-12 w-12 items-center justify-center rounded-lg neon-border text-4xl leading-none transition-all disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                                onClick={goToNextMember}
+                                disabled={
+                                  currentMemberIndex === memberCount - 1
+                                }
+                              >
+                                ›
+                              </button>
+
+                              {currentMemberIndex >= 2 && (
+                                <button
+                                  type="button"
+                                  className="ml-2 flex h-12 w-12 items-center justify-center rounded-lg border border-red-400/30 text-3xl leading-none text-red-400 transition-all hover:border-red-400 hover:bg-red-400/10 hover:text-red-300"
+                                  onClick={removeMember}
+                                  aria-label="Remove member"
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Render all member inputs but only show current one */}
+                            {Array.from({ length: memberCount }).map(
+                              (_, index) => (
+                                <div
+                                  key={index}
+                                  className={`${index === currentMemberIndex ? '' : 'hidden'}`}
+                                >
+                                  {/* Member Label */}
+                                  <div className="mb-3 text-sm font-semibold tracking-[0.08em]">
+                                    {getMemberLabel(index)}
+                                  </div>
+
+                                  <div className="grid gap-4 sm:grid-cols-2">
+                                    <div>
+                                      <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
+                                        NAME
+                                      </label>
+                                      <input
+                                        type="text"
+                                        name={`teamMembers[${index}].name`}
+                                        placeholder="FULL NAME"
+                                        required
+                                        className="neon-input"
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
+                                        STUDENT ID
+                                      </label>
+                                      <input
+                                        type="text"
+                                        name={`teamMembers[${index}].studentId`}
+                                        placeholder="STUDENT ID NUMBER"
+                                        required
+                                        className="neon-input"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              )
                             )}
                           </div>
-
-                          {/* Render all member inputs but only show current one */}
-                          {Array.from({ length: memberCount }).map(
-                            (_, index) => (
-                              <div
-                                key={index}
-                                className={`${index === currentMemberIndex ? '' : 'hidden'}`}
-                              >
-                                {/* Member Label */}
-                                <div className="mb-3 text-sm font-semibold tracking-[0.08em]">
-                                  {getMemberLabel(index)}
-                                </div>
-
-                                <div className="grid gap-4 sm:grid-cols-2">
-                                  <div>
-                                    <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
-                                      NAME
-                                    </label>
-                                    <input
-                                      type="text"
-                                      name={`teamMembers[${index}].name`}
-                                      placeholder="FULL NAME"
-                                      required
-                                      className="neon-input"
-                                    />
-                                  </div>
-                                  <div>
-                                    <label className="mb-1.5 block text-[11px] font-semibold tracking-[0.05em]">
-                                      STUDENT ID
-                                    </label>
-                                    <input
-                                      type="text"
-                                      name={`teamMembers[${index}].studentId`}
-                                      placeholder="STUDENT ID NUMBER"
-                                      required
-                                      className="neon-input"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              </div>
+                  </motion.div>
+                </div>
+              </fieldset>
 
               <input type="hidden" name="flow" value="signUp" />
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || isRegistrationClosed}
                 className="neon-button disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading ? (

@@ -1,4 +1,5 @@
 import { convexAuth } from '@convex-dev/auth/server'
+import { ConvexError } from 'convex/values'
 import { internal } from './_generated/api'
 import { MutationCtx } from './_generated/server'
 import CustomPassword from './CustomProfile'
@@ -9,6 +10,13 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
     async createOrUpdateUser(ctx: MutationCtx, args) {
       if (args.existingUserId) {
         return args.existingUserId
+      }
+
+      if (process.env.NEXT_PUBLIC_REGISTRAION_CLOSED) {
+        throw new ConvexError({
+          success: false,
+          message: 'Registration has been closed'
+        })
       }
 
       const profile = args.profile as {
