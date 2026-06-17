@@ -140,3 +140,18 @@ export const registrationFields = [
     placeholder: 'XXXXXXXXX'
   }
 ]
+
+export const loginFields = [
+  {
+    label: 'Email',
+    name: 'email',
+    type: 'email',
+    placeholder: 'user@students.nsbm.ac.lk'
+  },
+  {
+    label: 'Password',
+    name: 'password',
+    type: 'password',
+    placeholder: 'XXXXXXXXX'
+  }
+]
