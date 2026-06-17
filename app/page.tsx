@@ -1,12 +1,11 @@
-import { BackgroundEffects } from '@/components/background-effects'
-import { Hero } from '@/components/hero'
 import { AboutSection } from '@/components/about'
+import { BackgroundEffects } from '@/components/background-effects'
 import { EventSection } from '@/components/event-section'
-import { RegistrationForm } from '@/components/registration-form'
 import { FAQSection } from '@/components/faq'
 import { Footer } from '@/components/footer'
+import { Hero } from '@/components/hero'
 import { Navbar } from '@/components/navbar'
-import { ConvexClientProvider } from './ConvexClientProvider'
+import { RegistrationForm } from '@/components/registration-form'
 
 export default function Page() {
   return (
@@ -24,9 +23,7 @@ export default function Page() {
           <Hero />
           <AboutSection />
           <EventSection />
-          <ConvexClientProvider>
-            <RegistrationForm />
-          </ConvexClientProvider>
+          <RegistrationForm />
           <FAQSection />
         </main>
         <Footer />

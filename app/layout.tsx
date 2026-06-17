@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Orbitron, Rajdhani } from 'next/font/google'
 import './globals.css'
 import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server'
+import { ConvexClientProvider } from './ConvexClientProvider'
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -38,7 +39,7 @@ export default function RootLayout({
         <body
           className={`${orbitron.variable} ${rajdhani.variable} bg-bg font-body text-ink antialiased`}
         >
-          {children}
+          <ConvexClientProvider>{children}</ConvexClientProvider>
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>
