@@ -183,7 +183,7 @@ export function RegistrationForm() {
           title={
             isRegistrationClosed ? 'Grid has been closed' : 'Join the grid'
           }
-          description="A futuristic registration experience with responsive validation, neon inputs, and a celebratory success state."
+          description={''}
         />
 
         <motion.div

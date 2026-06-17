@@ -3,8 +3,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
-import { faqs } from '@/lib/site-content'
 import { SectionHeading } from '@/components/section-heading'
+import { faqs } from '@/lib/site-content'
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState(0)
@@ -15,7 +15,7 @@ export function FAQSection() {
         <SectionHeading
           eyebrow="FAQ"
           title="Common questions"
-          description="A smooth accordion experience keeps the answers close and the interface clean, readable, and futuristic."
+          description="Get your doubts sorted before the biggest event of the year"
         />
 
         <div className="mt-16 space-y-4">
