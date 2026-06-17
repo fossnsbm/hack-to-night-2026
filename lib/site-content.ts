@@ -8,10 +8,10 @@ import {
 } from 'lucide-react'
 
 export const navItems = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Event', href: '#event' },
-  { label: 'FAQ', href: '#faq' }
+  { label: 'Home', href: '/#home' },
+  { label: 'About', href: '/#about' },
+  { label: 'Event', href: '/#event' },
+  { label: 'FAQ', href: '/#faq' }
 ]
 
 export const eventFeatures = [
