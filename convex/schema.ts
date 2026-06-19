@@ -30,7 +30,27 @@ const schema = defineSchema({
   })
     .index('by_userId', ['userId'])
     .index('by_hackerUsername', ['hackerUsername'])
-    .index('by_githubUsername', ['githubUsername'])
+    .index('by_githubUsername', ['githubUsername']),
+  challenges: defineTable({
+    slug: v.string(),
+    name: v.string(),
+    category: v.string(),
+    difficulty: v.union(
+      v.literal('easy'),
+      v.literal('medium'),
+      v.literal('hard')
+    ),
+    preview: v.string(),
+    max_score: v.number()
+  }).index('by_slug', ['slug']),
+
+  teamChallenges: defineTable({
+    teamId: v.id('teams'),
+    challengeSlug: v.string(),
+    solvedAt: v.number()
+  })
+    .index('by_teamId', ['teamId'])
+    .index('by_teamId_and_slug', ['teamId', 'challengeSlug'])
 })
 
 export default schema
