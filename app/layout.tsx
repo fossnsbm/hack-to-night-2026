@@ -1,8 +1,9 @@
+import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server'
 import type { Metadata } from 'next'
 import { Orbitron, Rajdhani } from 'next/font/google'
-import './globals.css'
-import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server'
 import { ConvexClientProvider } from './ConvexClientProvider'
+import './globals.css'
+import { Toaster } from 'sonner'
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -40,6 +41,7 @@ export default function RootLayout({
           className={`${orbitron.variable} ${rajdhani.variable} bg-bg font-body text-ink antialiased`}
         >
           <ConvexClientProvider>{children}</ConvexClientProvider>
+          <Toaster position="bottom-right" />
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>

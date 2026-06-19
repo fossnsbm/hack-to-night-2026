@@ -73,6 +73,8 @@ export function Navbar() {
     })
   }
 
+  const hasClosed = JSON.parse(process.env.NEXT_PUBLIC_REGISTRAION_CLOSED!)
+
   return (
     <header
       ref={headerRef}
@@ -107,10 +109,10 @@ export function Navbar() {
 
         <div className="hidden lg:block">
           <a
-            href="#register"
+            href={hasClosed ? '/dashboard' : '/#register'}
             className="rounded-full border border-neon/50 bg-neon/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.24em] text-white shadow-glow transition duration-300 hover:-translate-y-0.5 hover:bg-neon/20"
           >
-            Register
+            {hasClosed ? 'Access the GRID' : 'Register'}
           </a>
         </div>
 
