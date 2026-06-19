@@ -30,6 +30,7 @@ type Env = {
   readonly RESEND_API_KEY: string | undefined;
   readonly RESEND_ONBOARDING_TEMPLATE: string | undefined;
   readonly RESEND_WEBHOOK_SECRET: string | undefined;
+  readonly SCRAPER_SECRET: string | undefined;
 };
 
 /**

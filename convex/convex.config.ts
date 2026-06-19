@@ -8,7 +8,8 @@ const app = defineApp({
     GOOGLE_SPREADSHEET_ID: v.string(),
     RESEND_API_KEY: v.optional(v.string()),
     RESEND_ONBOARDING_TEMPLATE: v.optional(v.string()),
-    RESEND_WEBHOOK_SECRET: v.optional(v.string())
+    RESEND_WEBHOOK_SECRET: v.optional(v.string()),
+    SCRAPER_SECRET: v.optional(v.string())
   }
 })
 app.use(resend)
