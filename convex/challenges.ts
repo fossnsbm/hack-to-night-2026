@@ -16,7 +16,6 @@ export const storeChallenges = mutation({
           v.literal('medium'),
           v.literal('hard')
         ),
-        preview: v.string(),
         max_score: v.number()
       })
     )

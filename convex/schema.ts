@@ -42,7 +42,6 @@ const schema = defineSchema({
       v.literal('advanced'),
       v.literal('expert')
     ),
-    preview: v.string(),
     max_score: v.number()
   }).index('by_slug', ['slug']),
 
