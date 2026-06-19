@@ -38,7 +38,9 @@ const schema = defineSchema({
     difficulty: v.union(
       v.literal('easy'),
       v.literal('medium'),
-      v.literal('hard')
+      v.literal('hard'),
+      v.literal('advanced'),
+      v.literal('expert')
     ),
     preview: v.string(),
     max_score: v.number()

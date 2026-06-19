@@ -16,7 +16,9 @@ export default function ChallengesSection(props: {
   const solvedChallenges =
     loadedSolvedChallenges?.map((challenge) => challenge.challengeSlug) ?? []
 
-  const getDifficultyColor = (difficulty: 'easy' | 'medium' | 'hard') => {
+  const getDifficultyColor = (
+    difficulty: 'easy' | 'medium' | 'hard' | 'advanced' | 'expert'
+  ) => {
     switch (difficulty) {
       case 'easy':
         return 'text-green-400 bg-green-400/10 border-green-400/20'
@@ -24,6 +26,10 @@ export default function ChallengesSection(props: {
         return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20'
       case 'hard':
         return 'text-red-400 bg-red-400/10 border-red-400/20'
+      case 'advanced':
+        return 'text-red-500 bg-red-400/10 border-red-400/20'
+      case 'expert':
+        return 'text-red-800 bg-red-400/10 border-red-400/20'
     }
   }
 
