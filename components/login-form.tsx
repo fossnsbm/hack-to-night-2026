@@ -4,6 +4,7 @@ import { useAuthActions } from '@convex-dev/auth/react'
 import { ConvexError } from 'convex/values'
 import { motion } from 'framer-motion'
 import { LoaderCircle, Send, ShieldCheck } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import * as z from 'zod'
 import { SectionHeading } from '@/components/section-heading'
@@ -17,6 +18,7 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [_success, setSuccess] = useState(false)
   const { signIn } = useAuthActions()
+  const router = useRouter()
 
   const loginSchema = z.object({
     email: z
@@ -72,6 +74,8 @@ export function LoginForm() {
       setErrors([])
       setLoading(false)
       setSuccess(true)
+
+      router.replace('/dashboard')
 
       window.setTimeout(() => setSuccess(false), 3200)
     } catch (error) {
