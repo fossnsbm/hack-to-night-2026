@@ -23,8 +23,14 @@ const schema = defineSchema({
         name: v.string(),
         studentId: v.string()
       })
-    )
-  }).index('by_userId', ['userId'])
+    ),
+    hackerUsername: v.optional(v.string()),
+    githubUsername: v.optional(v.string()),
+    buildathonUnlocked: v.optional(v.boolean())
+  })
+    .index('by_userId', ['userId'])
+    .index('by_hackerUsername', ['hackerUsername'])
+    .index('by_githubUsername', ['githubUsername'])
 })
 
 export default schema
