@@ -11,9 +11,13 @@
 import type * as CustomProfile from "../CustomProfile.js";
 import type * as addEmailContacts from "../addEmailContacts.js";
 import type * as auth from "../auth.js";
+import type * as challenges from "../challenges.js";
+import type * as github from "../github.js";
 import type * as googleSheets from "../googleSheets.js";
 import type * as http from "../http.js";
+import type * as lib_index from "../lib/index.js";
 import type * as sendEmails from "../sendEmails.js";
+import type * as teams from "../teams.js";
 
 import type {
   ApiFromModules,
@@ -25,9 +29,13 @@ declare const fullApi: ApiFromModules<{
   CustomProfile: typeof CustomProfile;
   addEmailContacts: typeof addEmailContacts;
   auth: typeof auth;
+  challenges: typeof challenges;
+  github: typeof github;
   googleSheets: typeof googleSheets;
   http: typeof http;
+  "lib/index": typeof lib_index;
   sendEmails: typeof sendEmails;
+  teams: typeof teams;
 }>;
 
 /**

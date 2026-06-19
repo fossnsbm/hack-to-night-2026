@@ -8,10 +8,10 @@ import {
 } from 'lucide-react'
 
 export const navItems = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Event', href: '#event' },
-  { label: 'FAQ', href: '#faq' }
+  { label: 'Home', href: '/#home' },
+  { label: 'About', href: '/#about' },
+  { label: 'Event', href: '/#event' },
+  { label: 'FAQ', href: '/#faq' }
 ]
 
 export const eventFeatures = [
@@ -136,6 +136,21 @@ export const registrationFields = [
   {
     label: 'Confirm Password',
     name: 'confpassword',
+    type: 'password',
+    placeholder: 'XXXXXXXXX'
+  }
+]
+
+export const loginFields = [
+  {
+    label: 'Email',
+    name: 'email',
+    type: 'email',
+    placeholder: 'user@students.nsbm.ac.lk'
+  },
+  {
+    label: 'Password',
+    name: 'password',
     type: 'password',
     placeholder: 'XXXXXXXXX'
   }

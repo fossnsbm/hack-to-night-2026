@@ -73,13 +73,15 @@ export function Navbar() {
     })
   }
 
+  const hasClosed = JSON.parse(process.env.NEXT_PUBLIC_REGISTRAION_CLOSED!)
+
   return (
     <header
       ref={headerRef}
       className="sticky top-0 z-50 border-b border-white/5 bg-black/35 backdrop-blur-2xl"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <a href="#home" className="group flex items-center gap-3">
+        <a href="/" className="group flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-full border border-neon/40 bg-neon/10 shadow-glow transition duration-300 group-hover:scale-105">
             <Sparkles ref={logoRef} className="h-5 w-5 text-neon" />
           </span>
@@ -107,10 +109,10 @@ export function Navbar() {
 
         <div className="hidden lg:block">
           <a
-            href="#register"
+            href={hasClosed ? '/dashboard' : '/#register'}
             className="rounded-full border border-neon/50 bg-neon/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.24em] text-white shadow-glow transition duration-300 hover:-translate-y-0.5 hover:bg-neon/20"
           >
-            Register
+            {hasClosed ? 'Access the GRID' : 'Register'}
           </a>
         </div>
 
